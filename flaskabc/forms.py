@@ -1,9 +1,35 @@
 from flask_wtf import FlaskForm
+from flask_login import current_user
 from wtforms import StringField, SubmitField,IntegerField, SelectField
-from wtforms.validators import DataRequired, Length, ValidationError, InputRequired, Email
+from wtforms.validators import DataRequired, Length, ValidationError, InputRequired, Email, EqualTo
 from wtforms import StringField, PasswordField, BooleanField
 #from flask_bootstrap import Bootstrap
 from wtforms.fields.html5 import DateField, TimeField
+from flaskabc.models import User
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Username',
+                           validators=[DataRequired(), Length(min=2, max=20)])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password',
+                                     validators=[DataRequired(), EqualTo('password')])
+    name = StringField('Name', validators=[DataRequired()])
+    address = StringField('Address', validators=[DataRequired()])
+    bname = StringField('Bank Name & Branch', validators=[DataRequired()])
+    bacc = StringField('Bank Account Number', validators=[DataRequired()])
+    ifsc = StringField('IFSC Code', validators=[DataRequired()])
+    dept = StringField('Department', validators=[DataRequired()])
+    dsgn = StringField('Designation', validators=[DataRequired()])
+    inst = StringField('Institute', validators=[DataRequired()])
+    basic_pay = StringField('Basic Pay (Rs.)')
+    id_no = StringField('Roll No./ID', validators=[DataRequired()])
+    submit = SubmitField('Sign Up')
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError('That username is taken. Please choose a different one.')
+
 
 class CcForm(FlaskForm):
     date = DateField(format='%Y-%m-%d')
@@ -136,7 +162,7 @@ class Tab_bForm(FlaskForm):
 class ReimForm(FlaskForm):
     name = StringField('Name of the faculty/staff', validators=[DataRequired()])
     dpt = StringField('Department', validators=[DataRequired()])
-    net_claimed = IntegerField('Net Claimed', validators=[DataRequired()])
+    #net_claimed = IntegerField('Net Claimed', validators=[DataRequired()])
     #amt2 = IntegerField('Aprroved Expenditure for Reimbursement (Rs)', validators=[DataRequired()])
     bank = StringField('Bank Name & Branch', validators=[DataRequired()])
     acc_no = StringField('Account Number', validators=[DataRequired()])

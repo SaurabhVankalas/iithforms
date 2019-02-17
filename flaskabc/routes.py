@@ -3,7 +3,7 @@ import os
 import xlsxwriter
 from flask import Flask, render_template, url_for, flash, redirect, request, abort, send_file, send_from_directory, Blueprint
 from flaskabc import app, db
-from flaskabc.forms import TransactionForm, LoginForm, TelephoneForm, Travel_allwForm, ContingentForm, TabForm, Tab_aForm, Tab_bForm, Contingent_aForm, Reim_detForm, ReimForm
+from flaskabc.forms import TransactionForm, LoginForm, TelephoneForm, Travel_allwForm, ContingentForm, TabForm, Tab_aForm, Tab_bForm, Contingent_aForm, Reim_detForm, ReimForm, RegistrationForm
 from flaskabc.models import Transaction, User, Telephone, Contingent, Travel_allw, Tab, Tab_a, Tab_b, Contingent_a, Reim, Reim_det
 from werkzeug import secure_filename
 from io import BytesIO
@@ -78,6 +78,19 @@ def login():
 
     #return render_template('login.html', form=form)
 
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('menu'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        #hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(username=form.username.data, password=form.password.data, name = form.name.data,address=form.address.data,bname=form.bname.data,bacc=form.bacc.data,ifsc=form.ifsc.data,dept=form.dept.data,dsgn=form.dsgn.data,inst=form.inst.data,basic_pay=form.basic_pay.data,id_no=form.id_no.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Your account has been created! You are now able to log in', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
 
 
 @app.route("/home")
@@ -472,7 +485,7 @@ def delete_telephone(telephone_id):
     return redirect(url_for('all_telephones'))
 
 
-@app.route("/telephone/new", methods=['GET', 'POST'])
+@app.route("/telephone/new/manual", methods=['GET', 'POST'])
 @login_required
 def new_telephone():
     form = TelephoneForm()
@@ -485,6 +498,27 @@ def new_telephone():
     return render_template('telephoneform.html', title='New Telephone Form',
                            form=form, legend='New Telephone Form')
 
+@app.route("/telephone/new/default", methods=['GET', 'POST'])
+@login_required
+def new_telephone_default():
+    form = TelephoneForm()
+    user_id = current_user.get_id()
+    user = User.query.get_or_404(int(user_id))
+    form.name.data = user.name
+    form.designation.data = user.dsgn
+    form.department.data = user.dept
+    form.emp_id.data = user.id_no
+    form.bank.data = user.bname
+    form.account.data = user.bacc
+    form.ifsc.data = user.ifsc
+    if form.validate_on_submit():
+        telephone = Telephone(name=form.name.data, designation=form.designation.data, department = form.department.data, emp_id = form.emp_id.data, bill = form.bill.data,month=form.month.data, date=form.date.data.strftime('%d/%m/%y'), bank = form.bank.data, account=form.account.data, ifsc = form.ifsc.data)
+        db.session.add(telephone)
+        db.session.commit()
+        flash('Your telephone entry has been created!', 'success')
+        return redirect(url_for('all_telephones'))
+    return render_template('telephoneform.html', title='New Telephone Form',
+                           form=form, legend='New Telephone Form')
 
 
 def createpdf_tele(name,designation,department,id,bill,month,date,bank,account,ifsc):
@@ -648,12 +682,36 @@ def delete_travel_allw(travel_allw_id):
     return redirect(url_for('all_travel_allw'))
 
 
-@app.route("/travel_allw/new", methods=['GET', 'POST'])
+@app.route("/travel_allw/new/manual", methods=['GET', 'POST'])
 @login_required
 def new_travel_allw():
     form = Travel_allwForm()
     if form.validate_on_submit():
         travel_allw = Travel_allw(name=form.name.data, designation=form.designation.data, department = form.department.data, basic_pay = form.basic_pay.data, d_o_j1 = form.d_o_j1.data.strftime('%d/%m/%y'), d_o_j2 = form.d_o_j2.data.strftime('%d/%m/%y'), p_o_j = form.p_o_j.data, s_no = form.p_o_j.data, c_o_j = form.c_o_j.data, e_o_f = form.e_o_f.data, acc_chrg = form.acc_chrg.data, exp = form.exp.data, details = form.details.data, add_req = form.add_req.data, ta_no = form.ta_no.data, ta_ad = form.ta_ad.data, rup = form.rup.data, b_name = form.b_name.data, b_acc = form.b_acc.data, ifsc = form.ifsc.data)
+        db.session.add(travel_allw)
+        db.session.commit()
+        flash('Your travel allowance entry has been created!', 'success')
+        return redirect(url_for('all_travel_allw'))
+    return render_template('travel_allwform.html', title='New Travel Allowance Form',
+                           form=form, legend='New Travel Allowance Form')
+
+@app.route("/travel_allw/new/default", methods=['GET', 'POST'])
+@login_required
+def new_travel_allw_default():
+    form = Travel_allwForm()
+    user_id = current_user.get_id()
+    user = User.query.get_or_404(int(user_id))
+    form.name.data = user.name
+    form.s_no.data = user.id_no
+    form.designation.data = user.dsgn
+    form.department.data = user.dept
+    #form.inst.data = user.inst
+    form.basic_pay.data = user.basic_pay
+    form.b_name.data = user.bname
+    form.b_acc.data = user.bacc
+    form.ifsc.data = user.ifsc
+    if form.validate_on_submit():
+        travel_allw = Travel_allw(name=form.name.data, designation=form.designation.data, department = form.department.data, basic_pay = form.basic_pay.data, d_o_j1 = form.d_o_j1.data.strftime('%d/%m/%y'), d_o_j2 = form.d_o_j2.data.strftime('%d/%m/%y'), p_o_j = form.p_o_j.data, s_no = form.s_no.data, c_o_j = form.c_o_j.data, e_o_f = form.e_o_f.data, acc_chrg = form.acc_chrg.data, exp = form.exp.data, details = form.details.data, add_req = form.add_req.data, ta_no = form.ta_no.data, ta_ad = form.ta_ad.data, rup = form.rup.data, b_name = form.b_name.data, b_acc = form.b_acc.data, ifsc = form.ifsc.data)
         db.session.add(travel_allw)
         db.session.commit()
         flash('Your travel allowance entry has been created!', 'success')
@@ -815,7 +873,7 @@ def delete_contingent(contingent_id):
     return redirect(url_for('all_contingent'))
 
 
-@app.route("/contingent/new", methods=['GET', 'POST'])
+@app.route("/contingent/new/manual", methods=['GET', 'POST'])
 @login_required
 def new_contingent():
     form = ContingentForm()
@@ -827,6 +885,27 @@ def new_contingent():
         return redirect(url_for('all_contingent'))
     return render_template('contingentform.html', title='New Contingent Form',
                            form=form, legend='New Contingent Form')
+
+@app.route("/contingent/new/default", methods=['GET', 'POST'])
+@login_required
+def new_contingent_default():
+    form = ContingentForm()
+    user_id = current_user.get_id()
+    user = User.query.get_or_404(int(user_id))
+    form.name.data = user.name
+    form.address.data = user.address
+    form.bankbranch.data = user.bname
+    form.acc_num.data = user.bacc
+    form.ifsc.data = user.ifsc
+    if form.validate_on_submit():
+        contingent = Contingent(curr_date = form.curr_date.data.strftime('%d/%m/%y'), station = form.station.data, name = form.name.data, address = form.address.data, bankbranch = form.bankbranch.data, acc_num = form.acc_num.data, ifsc = form.ifsc.data)
+        db.session.add(contingent)
+        db.session.commit()
+        flash('Your Contingent entry has been created!', 'success')
+        return redirect(url_for('all_contingent'))
+    return render_template('contingentform.html', title='New Contingent Form',
+                           form=form, legend='New Contingent Form')
+
 
 @app.route("/contingent/<int:contingent_id>/new_a",methods=['GET', 'POST'])
 @login_required
@@ -1057,6 +1136,31 @@ def new_tab():
     return render_template('tabform.html', title='New Travel Allowance Bill Form',
                            form=form, legend='New Travel Allowance Bill Form')
 
+@app.route("/tab/new/default", methods=['GET', 'POST'])
+@login_required
+def new_tab_default():
+    form = TabForm()
+    user_id = current_user.get_id()
+    user = User.query.get_or_404(int(user_id))
+    form.name.data = user.name
+    form.srn.data = user.id_no
+    form.dsgn.data = user.dsgn
+    form.dpt.data = user.dept
+    form.inst.data = user.inst
+    form.bp.data = user.basic_pay
+    form.bankname.data = user.bname
+    form.accno.data = user.bacc
+    form.ifsc.data = user.ifsc
+    if form.validate_on_submit():
+        tab = Tab(name = form.name.data,srn = form.srn.data,dsgn = form.dsgn.data,dpt = form.dpt.data,inst = form.inst.data,bp = form.bp.data,ipac = form.ipac.data,poj = form.poj.data,enc = form.enc.data,date = form.date.data.strftime('%d/%m/%y'),advdrawn = form.advdrawn.data,excesspaid = form.excesspaid.data,excessrecovered = form.excessrecovered.data,bankname = form.bankname.data,accno = form.accno.data,ifsc = form.ifsc.data)
+        db.session.add(tab)
+        db.session.commit()
+        flash('Your Travel Allowance Bill entry has been created!', 'success')
+        return redirect(url_for('all_tab'))
+    return render_template('tabform.html', title='New Travel Allowance Bill Form',
+                           form=form, legend='New Travel Allowance Bill Form')
+
+
 
 @app.route("/tab/<int:tab_id>/download", methods=['GET', 'POST'])
 @login_required
@@ -1232,12 +1336,12 @@ def all_reim():
     return render_template('reim.html', reims=reims)
 
 
-@app.route("/reim/new", methods=['GET', 'POST'])
+@app.route("/reim/new/manual", methods=['GET', 'POST'])
 @login_required
 def new_reim():
     form = ReimForm()
     if form.validate_on_submit():
-        reim = Reim(name = form.name.data, dpt = form.dpt.data,net_claimed = form.net_claimed.data, bank = form.bank.data, acc_no = form.acc_no.data, ifsc = form.ifsc.data)
+        reim = Reim(name = form.name.data, dpt = form.dpt.data, bank = form.bank.data, acc_no = form.acc_no.data, ifsc = form.ifsc.data)
         db.session.add(reim)
         db.session.commit()
         flash('Your Reimbursement Form has been created!', 'success')
@@ -1245,6 +1349,25 @@ def new_reim():
     return render_template('reimform.html', title='New Reimbursement Form',
                            form=form, legend='New Reimbursement Form')
 
+@app.route("/reim/new/default", methods=['GET', 'POST'])
+@login_required
+def new_reim_default():
+    form = ReimForm()
+    user_id = current_user.get_id()
+    user = User.query.get_or_404(int(user_id))
+    form.name.data = user.name
+    form.dpt.data = user.dept
+    form.bank.data = user.bname
+    form.acc_no.data = user.bacc
+    form.ifsc.data = user.ifsc
+    if form.validate_on_submit():
+        reim = Reim(name = form.name.data, dpt = form.dpt.data, bank = form.bank.data, acc_no = form.acc_no.data, ifsc = form.ifsc.data)
+        db.session.add(reim)
+        db.session.commit()
+        flash('Your Reimbursement Form has been created!', 'success')
+        return redirect(url_for('all_reim'))
+    return render_template('reimform.html', title='New Reimbursement Form',
+                           form=form, legend='New Reimbursement Form')
 
 @app.route("/delete_reims")
 @login_required
@@ -1276,7 +1399,7 @@ def update_reim(reim_id):
     if form.validate_on_submit():
         reim.name = form.name.data
         reim.dpt = form.dpt.data
-        reim.net_claimed = form.net_claimed.data
+        #reim.net_claimed = form.net_claimed.data
         reim.bank = form.bank.data
         reim.acc_no = form.acc_no.data
         reim.ifsc = form.ifsc.data
@@ -1286,12 +1409,11 @@ def update_reim(reim_id):
     elif request.method == 'GET':  
         form.name.data = reim.name  
         form.dpt.data = reim.dpt  
-        form.net_claimed.data = reim.net_claimed
+        #form.net_claimed.data = reim.net_claimed
         form.bank.data = reim.bank
         form.acc_no.data = reim.acc_no  
         form.ifsc.data = reim.ifsc 
     return render_template('reimform.html',title='Update Reimbursement Form',form=form, legend='Update Reimbursement Form')
-
 
 @app.route("/reim/<int:reim_id>/all_reim_det")
 @login_required
@@ -1338,7 +1460,7 @@ def download_reim(reim_id):
     reim_dets = reim.pets
     can.drawString(210, 588, reim.name)
     can.drawString(210, 570, reim.dpt)
-    can.drawString(210, 550, reim.net_claimed)
+    #can.drawString(210, 550, reim.net_claimed)
     count = 1
     for reim_det in reim_dets:
         ccd += 1
@@ -1356,6 +1478,7 @@ def download_reim(reim_id):
     can.drawString(170, 213, ss)
     can.drawString(530, 225, str(total))
     can.drawString(470, 155, str(total))
+    can.drawString(210, 550, str(total))         #net claimed
     can.drawString(230, 88, reim.bank)
     can.drawString(230, 78, reim.acc_no)
     can.drawString(230, 68, reim.ifsc)

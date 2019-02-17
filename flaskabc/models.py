@@ -26,6 +26,16 @@ class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    address = db.Column(db.String(100), nullable=False)
+    bname = db.Column(db.String(100), nullable=False)
+    bacc = db.Column(db.String(100), nullable=False)
+    ifsc = db.Column(db.String(100), nullable=False)
+    dept = db.Column(db.String(100), nullable=False)
+    dsgn = db.Column(db.String(100), nullable=False)
+    inst = db.Column(db.String(100), nullable=False)
+    basic_pay = db.Column(db.String(100), nullable=True)
+    id_no = db.Column(db.String(100), nullable=False)
 
     def is_authenticated(self):
         return True
@@ -174,7 +184,7 @@ class Reim(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(100), nullable=False)
     dpt = db.Column(db.String(100), nullable=False)
-    net_claimed = db.Column(db.String(100), nullable=False)
+    #net_claimed = db.Column(db.String(100), nullable=False)
     #amt2 = db.Column(db.Integer, nullable=False)
     bank = db.Column(db.String(100), nullable=False)
     acc_no = db.Column(db.String(100), nullable=False)
