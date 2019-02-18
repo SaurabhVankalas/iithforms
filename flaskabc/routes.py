@@ -302,6 +302,7 @@ def download_excel():
    worksheet.write('A1', 'Date')
    worksheet.write('B1', 'Transactional Details')
    worksheet.write('C1', 'Amount')
+   worksheet.write('D1','Debit/Credit')
    os.system("pdftotext -layout -l 1 " + file)
    readfrom = open(file2, "r+")
    #strr = ""
@@ -311,6 +312,8 @@ def download_excel():
       date = ""
       transaction = ""
       amount = ""
+      dc = ""
+      amt1 = ""
       #strr = strr + text
       text=" ".join(text.split())
       index = index + 1
@@ -324,14 +327,18 @@ def download_excel():
                if isnum2(text[length-2-i]) == 0 and (text[length-2-i]) != ',' and (text[length-2-i]) != '.' :
                   cc = length-2-i
                   break
-            amount = text[cc:length+1]
+            amount = text[cc+1:length-1]
             #print (amount)
             transaction = text[10:cc]
+            dc = text[length:length+1]
             #print (transaction)
             row += 1
             worksheet.write(row,0, date)
             worksheet.write(row,1, transaction)
-            worksheet.write(row,2, amount)
+            amt1 = amount.replace(",", "")
+            #print(dc)
+            worksheet.write(row,2, float(amt1))
+            worksheet.write(row,3,dc)
             
    workbook.close()
    readfrom.close()  
@@ -1063,8 +1070,8 @@ def update_tab(tab_id):
         #tab.AB = form.AB.data
         tab.advdrawn = form.advdrawn.data
         #tab.netclaimed = form.netclaimed.data
-        tab.excesspaid = form.excesspaid.data
-        tab.excessrecovered = form.excessrecovered.data
+        #tab.excesspaid = form.excesspaid.data
+        #tab.excessrecovered = form.excessrecovered.data
         tab.bankname = form.bankname.data
         tab.accno = form.accno.data
         tab.ifsc = form.ifsc.data
@@ -1105,8 +1112,8 @@ def update_tab(tab_id):
         #form.AB.data = tab.AB 
         form.advdrawn.data = tab.advdrawn 
         #form.netclaimed.data = tab.netclaimed 
-        form.excesspaid.data = tab.excesspaid 
-        form.excessrecovered.data = tab.excessrecovered 
+        #form.excesspaid.data = tab.excesspaid 
+        #form.excessrecovered.data = tab.excessrecovered 
         form.bankname.data = tab.bankname 
         form.accno.data = tab.accno 
         form.ifsc.data = tab.ifsc
@@ -1128,7 +1135,7 @@ def delete_tab(tab_id):
 def new_tab():
     form = TabForm()
     if form.validate_on_submit():
-        tab = Tab(name = form.name.data,srn = form.srn.data,dsgn = form.dsgn.data,dpt = form.dpt.data,inst = form.inst.data,bp = form.bp.data,ipac = form.ipac.data,poj = form.poj.data,enc = form.enc.data,date = form.date.data.strftime('%d/%m/%y'),advdrawn = form.advdrawn.data,excesspaid = form.excesspaid.data,excessrecovered = form.excessrecovered.data,bankname = form.bankname.data,accno = form.accno.data,ifsc = form.ifsc.data)
+        tab = Tab(name = form.name.data,srn = form.srn.data,dsgn = form.dsgn.data,dpt = form.dpt.data,inst = form.inst.data,bp = form.bp.data,ipac = form.ipac.data,poj = form.poj.data,enc = form.enc.data,date = form.date.data.strftime('%d/%m/%y'),advdrawn = form.advdrawn.data,bankname = form.bankname.data,accno = form.accno.data,ifsc = form.ifsc.data)
         db.session.add(tab)
         db.session.commit()
         flash('Your Travel Allowance Bill entry has been created!', 'success')
@@ -1152,7 +1159,7 @@ def new_tab_default():
     form.accno.data = user.bacc
     form.ifsc.data = user.ifsc
     if form.validate_on_submit():
-        tab = Tab(name = form.name.data,srn = form.srn.data,dsgn = form.dsgn.data,dpt = form.dpt.data,inst = form.inst.data,bp = form.bp.data,ipac = form.ipac.data,poj = form.poj.data,enc = form.enc.data,date = form.date.data.strftime('%d/%m/%y'),advdrawn = form.advdrawn.data,excesspaid = form.excesspaid.data,excessrecovered = form.excessrecovered.data,bankname = form.bankname.data,accno = form.accno.data,ifsc = form.ifsc.data)
+        tab = Tab(name = form.name.data,srn = form.srn.data,dsgn = form.dsgn.data,dpt = form.dpt.data,inst = form.inst.data,bp = form.bp.data,ipac = form.ipac.data,poj = form.poj.data,enc = form.enc.data,date = form.date.data.strftime('%d/%m/%y'),advdrawn = form.advdrawn.data,bankname = form.bankname.data,accno = form.accno.data,ifsc = form.ifsc.data)
         db.session.add(tab)
         db.session.commit()
         flash('Your Travel Allowance Bill entry has been created!', 'success')
@@ -1235,8 +1242,14 @@ def download_tab(tab_id):
     can.drawString(215,194, str(tab.advdrawn))
     net = total - tab.advdrawn
     can.drawString(215,184, str(net))
-    can.drawString(215,174, str(tab.excesspaid))
-    can.drawString(215,165, str(tab.excessrecovered))
+    #can.drawString(215,174, str(tab.excesspaid))
+    #can.drawString(215,165, str(tab.excessrecovered))
+    if (net>0) :
+        can.drawString(215,174, str(net))
+        can.drawString(215,165,'-')
+    else:
+        can.drawString(215,165, str(net*(-1)))
+        can.drawString(215,174,'-')
     can.save()
 #move to the beginning of the StringIO buffer
     packet.seek(0)

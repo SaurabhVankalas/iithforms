@@ -192,34 +192,7 @@
                         {% endif %}
             </div>
             
-            <div class="form-group">
-                    {{ form.excesspaid.label(class="form-control-label") }}
-                                        
-                        {% if form.excesspaid.errors %}
-                            {{ form.excesspaid(class="form-control form-control-lg is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.excesspaid.errors %}
-                                    <span>{{ error }}</span>
-                                            {% endfor %}
-                            </div>
-                         {% else %}
-                                {{ form.excesspaid(class="form-control form-control-lg") }}
-                        {% endif %}
-            </div>
-            <div class="form-group">
-                    {{ form.excessrecovered.label(class="form-control-label") }}
-                                        
-                        {% if form.excessrecovered.errors %}
-                            {{ form.excessrecovered(class="form-control form-control-lg is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.excessrecovered.errors %}
-                                    <span>{{ error }}</span>
-                                            {% endfor %}
-                            </div>
-                         {% else %}
-                                {{ form.excessrecovered(class="form-control form-control-lg") }}
-                        {% endif %}
-            </div>
+            
             <div class="form-group">
                     {{ form.bankname.label(class="form-control-label") }}
                                         
