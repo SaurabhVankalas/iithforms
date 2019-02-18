@@ -119,7 +119,7 @@ class TabForm(FlaskForm):
     dpt = StringField('Department', validators=[DataRequired()])
     inst = StringField('Institute', validators=[DataRequired()])
     bp = IntegerField('Basic Pay Rs')
-    ipac = IntegerField('Institute Account/Project Account No.', validators=[DataRequired()])
+    ipac = StringField('Institute Account/Project Account No.', validators=[DataRequired()])
     poj = StringField('Purpose of Journey', validators=[DataRequired()])
     enc = IntegerField('No. of Enclosures', validators=[DataRequired()])
     date = DateField('Date', format='%Y-%m-%d')

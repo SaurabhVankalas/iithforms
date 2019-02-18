@@ -132,7 +132,7 @@ class Tab(db.Model):
     dpt = db.Column(db.String(100), nullable=False)
     inst = db.Column(db.String(100), nullable=False)
     bp = db.Column(db.Integer, nullable=True)
-    ipac = db.Column(db.Integer, nullable=False)
+    ipac = db.Column(db.String(100), nullable=False)
     poj = db.Column(db.String(100), nullable=False)
     enc = db.Column(db.Integer, nullable=False)
     date = db.Column(db.String(100), nullable=False)
