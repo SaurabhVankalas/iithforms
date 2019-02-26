@@ -20,8 +20,9 @@ from datetime import datetime
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import io
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter, A4
-
+from reportlab.lib.pagesizes import letter, A4,inch
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 ############################# telephone functions ##################
 
 def getmonth(mo):	
@@ -115,13 +116,14 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route("/all_transactions")
+@app.route("/<int:tele_id>/all_transactions")
 @login_required
-def all_transactions():
-    transactions = Transaction.query.all()
-    return render_template('transactions.html', transactions=transactions)
+def all_transactions(tele_id):
+    telephone = Telephone.query.get_or_404(tele_id)
+    transactions = telephone.pets
+    return render_template('transactions.html', transactions=transactions, telephone = telephone)
 
-
+'''
 @app.route("/delete_transactions")
 @login_required
 def delete_transactions():
@@ -162,7 +164,7 @@ def delete_transaction(transaction_id):
     db.session.commit()
     flash('Your transaction has been deleted!', 'success')
     return redirect(url_for('all_transactions'))
-
+'''
 
 @app.route("/about")
 def about():
@@ -171,26 +173,30 @@ def about():
     return render_template('about.html', title='About')
 
 
-@app.route("/transaction/new", methods=['GET', 'POST'])
+@app.route("/transaction/<int:tele_id>/new", methods=['GET', 'POST'])
 @login_required
-def new_transaction():
+def new_transaction(tele_id):
     form = TransactionForm()
     if form.validate_on_submit():
-        transaction = Transaction(service=form.service.data, provider=form.provider.data, date=form.date.data, amount=form.amount.data)
+        transaction = Transaction(service=form.service.data, provider=form.provider.data, date=form.date.data.strftime('%d/%m/%y'), amount=form.amount.data, tele_id = tele_id)
         db.session.add(transaction)
         db.session.commit()
         flash('Your transaction has been created!', 'success')
-        return redirect(url_for('menu_htmlforms'))
+        return redirect(url_for('all_telephones'))
     return render_template('create_transaction.html', title='New Transaction',
                            form=form, legend='New Transaction')
 
 
 
 
-@app.route("/download")
+@app.route("/<int:tele_id>/download")
 @login_required
-def download():
-    workbook = xlsxwriter.Workbook('test.xlsx')
+def download(tele_id):
+    telephone = Telephone.query.get_or_404(tele_id)
+    transaction_all = telephone.pets
+    f_name = str(telephone.id) + '.xlsx'
+    #f_name1 = str(telephone.id) + '.pdf'
+    workbook = xlsxwriter.Workbook(f_name)
     worksheet = workbook.add_worksheet()
     row = 0
     col = 0
@@ -209,21 +215,15 @@ def download():
     worksheet.write('D1', 'Date', merge_format2)
     worksheet.write('E1', 'Amount', merge_format2)
     row = 1
-    transaction_all = Transaction.query.all()
+    #transaction_all = Transaction.query.all()
+    
     total = 0
     for trans in (transaction_all):
         worksheet.write(row, col, row,merge_format4)
         worksheet.write(row, col+1, trans.service,merge_format3)
         worksheet.write(row, col + 2, trans.provider,merge_format3)
         date1 = str(trans.date)
-        #print (date1)
-        date2 = date1.split('-')
-        #print (date2)
-        yy = date2[0]
-        mm = date2[1] + '/'
-        dd = date2[2] + '/'
-        date3 = dd + mm + yy
-        worksheet.write(row, col + 3,date3,merge_format3)
+        worksheet.write(row, col + 3,date1,merge_format3)
         w = int(trans.amount)
         total = total + w
         worksheet.write(row, col + 4, w,merge_format3)
@@ -241,8 +241,9 @@ def download():
     #worksheet.write('B4:D4', 'Total', bold)
     worksheet.write(row, 4, total,merge_format2)
     workbook.close()
-    path2 = os.getcwd() + '/' +'test.xlsx'
-    return send_file(path2, attachment_filename="test.xlsx", as_attachment=True)
+    path2 = os.getcwd() + '/' + f_name
+    #path29 = os.getcwd() + '/' + f_name1
+    return send_file(path2, attachment_filename=f_name, as_attachment=True)
     
 
 
@@ -459,7 +460,7 @@ def update_telephone(telephone_id):
         telephone.designation = form.designation.data
         telephone.department = form.department.data
         telephone.emp_id = form.emp_id.data
-        telephone.bill = form.bill.data
+        #telephone.bill = form.bill.data
         telephone.month = form.month.data
         telephone.date = form.date.data.strftime('%d/%m/%y')
         telephone.bank = form.bank.data
@@ -473,7 +474,7 @@ def update_telephone(telephone_id):
         form.designation.data = telephone.designation
         form.department.data = telephone.department
         form.emp_id.data = telephone.emp_id
-        form.bill.data = telephone.bill
+        #form.bill.data = telephone.bill
         form.month.data = telephone.month
         form.date.data = datetime.strptime(telephone.date, '%d/%m/%y')
         form.bank.data = telephone.bank
@@ -497,7 +498,7 @@ def delete_telephone(telephone_id):
 def new_telephone():
     form = TelephoneForm()
     if form.validate_on_submit():
-        telephone = Telephone(name=form.name.data, designation=form.designation.data, department = form.department.data, emp_id = form.emp_id.data, bill = form.bill.data,month=form.month.data, date=form.date.data.strftime('%d/%m/%y'), bank = form.bank.data, account=form.account.data, ifsc = form.ifsc.data)
+        telephone = Telephone(name=form.name.data, designation=form.designation.data, department = form.department.data, emp_id = form.emp_id.data,month=form.month.data, date=form.date.data.strftime('%d/%m/%y'), bank = form.bank.data, account=form.account.data, ifsc = form.ifsc.data)
         db.session.add(telephone)
         db.session.commit()
         flash('Your telephone entry has been created!', 'success')
@@ -519,7 +520,7 @@ def new_telephone_default():
     form.account.data = user.bacc
     form.ifsc.data = user.ifsc
     if form.validate_on_submit():
-        telephone = Telephone(name=form.name.data, designation=form.designation.data, department = form.department.data, emp_id = form.emp_id.data, bill = form.bill.data,month=form.month.data, date=form.date.data.strftime('%d/%m/%y'), bank = form.bank.data, account=form.account.data, ifsc = form.ifsc.data)
+        telephone = Telephone(name=form.name.data, designation=form.designation.data, department = form.department.data, emp_id = form.emp_id.data,month=form.month.data, date=form.date.data.strftime('%d/%m/%y'), bank = form.bank.data, account=form.account.data, ifsc = form.ifsc.data)
         db.session.add(telephone)
         db.session.commit()
         flash('Your telephone entry has been created!', 'success')
@@ -528,24 +529,27 @@ def new_telephone_default():
                            form=form, legend='New Telephone Form')
 
 
-def createpdf_tele(name,designation,department,id,bill,month,date,bank,account,ifsc):
-	# print "here"
-    if name == "":
-        name = "."
-    if designation == "":
-        designation = "."
-    if department == "":
-        department = "."
-    if id == "":
-        id = "."
-    if date == "":
-        date = "1111/00/11"
-    if bank == "":
-        bank = "."
-    if account == "":
-        account = "."
-    if ifsc == "":
-        ifsc = "."
+
+@app.route("/telephone/<int:telephone_id>/download", methods=['GET', 'POST'])
+@login_required
+def download_telephone(telephone_id):
+    telephone = Telephone.query.get_or_404(telephone_id)
+    name = telephone.name
+    designation = telephone.designation
+    department = telephone.department
+    id = telephone.emp_id
+    month = telephone.month
+    date = telephone.date
+    bank = telephone.bank
+    account = telephone.account
+    ifsc = telephone.ifsc
+    tele_id = str(telephone.id)
+    #createpdf_tele(str(telephone.name),str(telephone.designation),str(telephone.department),str(telephone.emp_id),str(telephone.month),str(telephone.date),str(telephone.bank),str(telephone.account),str(telephone.ifsc),str(telephone.id))
+    telephone = Telephone.query.get_or_404(tele_id)
+    transactions = telephone.pets
+    bill = 0
+    for transaction in transactions:
+        bill = bill + transaction.amount
     packet = io.BytesIO()
 # create a new PDF with Reportlab
     can = canvas.Canvas(packet, pagesize=A4)
@@ -553,6 +557,7 @@ def createpdf_tele(name,designation,department,id,bill,month,date,bank,account,i
     can.setFont("Helvetica", 10) 
     can.drawString(505, 593, str(date))
     can.drawString(397, 480, str(bill))
+    
     p = inflect.engine()
     ss = p.number_to_words(bill)
     ss = ss.upper()
@@ -565,6 +570,7 @@ def createpdf_tele(name,designation,department,id,bill,month,date,bank,account,i
             
         else:
             can.drawString(80,462, ss[10:len(ss)])
+    
     #month = getmonth(str(date[5])+str(date[6]))
     can.setFont("Helvetica", 10) 
     can.drawString(300, 463, str(month))
@@ -589,21 +595,39 @@ def createpdf_tele(name,designation,department,id,bill,month,date,bank,account,i
 # add the "watermark" (which is the new pdf) on the existing page
     page = existing_pdf.getPage(0)
     page.mergePage(new_pdf.getPage(0))
+    #output.addPage(page)
+    doc = SimpleDocTemplate("simple_table_grid.pdf", pagesize = A4, rightMargin=30,leftMargin=30, topMargin=600,bottomMargin=18)
+# container for the 'Flowable' objects
+    elements = []
+    tele_id = int(tele_id)
+    
+
+    data= [['Service', 'Provider', 'Date', 'Amount']]
+    for transaction in transactions:
+        li = [transaction.service,transaction.provider,str(transaction.date),str(transaction.amount)]
+        data.append(li)
+
+    t=Table(data,70, 30)
+    t.setStyle(TableStyle([
+                        ('ALIGN',(0,0),(-1,-1),'CENTER'),
+                        ('VALIGN',(0,0),(-1,-1),'MIDDLE'),
+                        ('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
+                        ('BOX', (0,0), (-1,-1), 0.25, colors.black),
+                        ]))
+    elements.append(t)
+    doc.build(elements)
+    existing_pdf2 = PdfFileReader(open((cw+"/simple_table_grid.pdf"), "rb"))
+    page2 = existing_pdf2.getPage(0)
+    page
+    page.mergePage(page2)
     output.addPage(page)
-# finally, write "output" to a real file
-    outputStream = open(name+"_tele.pdf", "wb")
+    copy = 0
+    outputStream = open(str(tele_id)+'_copy(' +str(copy)+")_tele.pdf", "wb")
     output.write(outputStream)
     outputStream.close()
-    return
-
-
-@app.route("/telephone/<int:telephone_id>/download", methods=['GET', 'POST'])
-@login_required
-def download_telephone(telephone_id):
-    telephone = Telephone.query.get_or_404(telephone_id)
-    createpdf_tele(str(telephone.name),str(telephone.designation),str(telephone.department),str(telephone.emp_id),str(telephone.bill),str(telephone.month),str(telephone.date),str(telephone.bank),str(telephone.account),str(telephone.ifsc))
-    path21 = os.getcwd() + '/' +telephone.name + "_tele.pdf"
-    return send_file(path21, attachment_filename=telephone.name + "_tele.pdf", as_attachment=True)
+    path21 = os.getcwd() + '/' +str(tele_id)+'_copy(' +str(copy)+")_tele.pdf"
+    copy = copy + 1
+    return send_file(path21, attachment_filename=str(telephone.id) + "_tele.pdf", as_attachment=True)
 
 
 ###############################################################################################
@@ -1240,7 +1264,7 @@ def download_tab(tab_id):
     total = total_a + total_b
     can.drawString(215,204, str(total))
     can.drawString(215,194, str(tab.advdrawn))
-    net = total - tab.advdrawn
+    net = total - int(tab.advdrawn)
     can.drawString(215,184, str(net))
     #can.drawString(215,174, str(tab.excesspaid))
     #can.drawString(215,165, str(tab.excessrecovered))

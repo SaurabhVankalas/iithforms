@@ -124,7 +124,6 @@
             <th>Designation</th>
             <th>Department</th>
             <th>Employee ID</th>
-            <th>Bill</th>
             <th>Month</th>
             <th>Date</th>
             <th>Bank Details</th>
@@ -140,15 +139,17 @@
           <td>{{ telephone.designation }}</td>
           <td>{{ telephone.department }}</td>
           <td>{{ telephone.emp_id }}</td>
-          <td>{{ telephone.bill }}</td>
           <td>{{ telephone.month }}</td>
           <td>{{ telephone.date }}</td>
           <td>{{ telephone.bank }}</td>
           <td>{{ telephone.account }}</td>
           <td>{{ telephone.ifsc }}</td>
+          <td><a href = "{{ url_for('all_transactions', tele_id = telephone.id) }}">View Transactions</a></td>
+          <td><a href = "{{ url_for('download', tele_id = telephone.id) }}">Download excel sheet</a></td>
+
           <td><a href = "{{ url_for('update_telephone', telephone_id = telephone.id) }}">Update</a></td>
           <td><a href = "{{ url_for('delete_telephone', telephone_id = telephone.id) }}">Delete</a></td>
-          <td><a href = "{{ url_for('download_telephone', telephone_id = telephone.id) }}">Download</a></td>
+          <td><a href = "{{ url_for('download_telephone', telephone_id = telephone.id) }}">Download pdf</a></td>
         </tr>
         {% endfor %}
     </tbody>

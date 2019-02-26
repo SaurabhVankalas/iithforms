@@ -64,20 +64,7 @@
                     {{ form.emp_id(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
-            <div class="form-group">
-                {{ form.bill.label(class="form-control-label") }}
-                
-                {% if form.bill.errors %}
-                    {{ form.bill(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.bill.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.bill(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
+            
             <div class="form-group">
                 {{ form.month.label(class="form-control-label") }}
                 

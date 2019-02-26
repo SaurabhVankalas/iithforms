@@ -11,16 +11,7 @@ class Cc(db.Model):
 '''
 
 
-class Transaction(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    service = db.Column(db.String(100), nullable=False)
-    date = db.Column(db.String(100), nullable=False)
-    provider = db.Column(db.Text, nullable=False)
-    amount = db.Column(db.Integer, nullable=False)
-    #user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    def __repr__(self):
-        return '<Transaction %r>' % (self.service)
 
 class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
@@ -54,21 +45,35 @@ class User(db.Model):
 
 
 class Telephone(db.Model):
+    __tablename__ = 'telephone'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     designation = db.Column(db.String(100), nullable=False)
     department = db.Column(db.String(100), nullable=False)
     emp_id = db.Column(db.String, nullable=False)
-    bill = db.Column(db.Integer, nullable=False)
+    #bill = db.Column(db.Integer, nullable=False)
     date = db.Column(db.String(100), nullable=False)
     month = db.Column(db.String(100), nullable=False)
     bank = db.Column(db.String(100), nullable=False)
     account = db.Column(db.Integer, nullable=False)
     ifsc = db.Column(db.String(100), nullable=False)
+    pets = db.relationship('Transaction')
     #user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
         return '<Telephone %r>' % (self.name)
+
+class Transaction(db.Model):
+    __tablename__ = 'transaction'
+    id = db.Column(db.Integer, primary_key=True)
+    service = db.Column(db.String(100), nullable=False)
+    date = db.Column(db.String(100), nullable=False)
+    provider = db.Column(db.Text, nullable=False)
+    amount = db.Column(db.Integer, nullable=False)
+    #user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    tele_id = db.Column(db.Integer, db.ForeignKey('telephone.id'))
+    def __repr__(self):
+        return '<Transaction %r>' % (self.service)
 
 
 class Travel_allw(db.Model):
@@ -139,7 +144,7 @@ class Tab(db.Model):
     #amt44 = db.Column(db.Integer, nullable=False)
     #amt55 = db.Column(db.Integer, nullable=False)
     #AB = db.Column(db.Integer, nullable=False)
-    advdrawn = db.Column(db.Integer, nullable=False)
+    advdrawn = db.Column(db.String(100), nullable=True)
     #netclaimed = db.Column(db.Integer, nullable=False)
     #excesspaid = db.Column(db.Integer, nullable=False)
     #excessrecovered = db.Column(db.Integer, nullable=False)

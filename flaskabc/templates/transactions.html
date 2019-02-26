@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<a href = "{{ url_for('new_transaction') }}"> Create Transaction?</a>
+<a href = "{{ url_for('new_transaction', tele_id = telephone.id) }}"> Create Transaction?</a>
 
 <head>
     <style>
@@ -49,8 +49,8 @@
           <td>{{ transaction.provider }}</td>
           <td>{{ transaction.date }}</td>
           <td>{{ transaction.amount }}</td>
-          <td><a href = "{{ url_for('update_transaction', transaction_id = transaction.id) }}">Update</a></td>
-          <td><a href = "{{ url_for('delete_transaction', transaction_id = transaction.id) }}">Delete</a></td>
+          <td><a href = "#">Update</a></td>
+          <td><a href = "#">Delete</a></td>
         </tr>
         {% endfor %}
     </tbody>

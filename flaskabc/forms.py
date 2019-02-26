@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from flask_login import current_user
 from wtforms import StringField, SubmitField,IntegerField, SelectField
 from wtforms.validators import DataRequired, Length, ValidationError, InputRequired, Email, EqualTo
-from wtforms import StringField, PasswordField, BooleanField
+from wtforms import StringField, PasswordField, BooleanField, FloatField
 #from flask_bootstrap import Bootstrap
 from wtforms.fields.html5 import DateField, TimeField
 from flaskabc.models import User
@@ -51,7 +51,7 @@ class TelephoneForm(FlaskForm):
     designation = StringField('Designation', validators=[DataRequired()])
     department = StringField('Department', validators=[DataRequired()])
     emp_id = StringField('Employee ID', validators=[DataRequired()])
-    bill = IntegerField('Bill Amount', validators=[DataRequired()])
+    #bill = IntegerField('Bill Amount', validators=[DataRequired()])
     date = DateField(id='datepick',format='%Y-%m-%d')
     month = SelectField('Select-Month',choices = [('January','January'),('February','February'),('March','March'),('April','April'),('May','May'),('June','June'),('July','July'),('August','August'),('September','September'),('October','October'),('November','November'),('December','December')] ,validators=[DataRequired()])
     bank = StringField('Bank Name and Branch', validators=[DataRequired()])
@@ -126,7 +126,7 @@ class TabForm(FlaskForm):
     #amt44 = IntegerField('Total Amount Admissible (A)', validators=[DataRequired()])
     #amt55 = IntegerField('Total Amount Admissible (B)', validators=[DataRequired()])
     #AB = IntegerField('A + B', validators=[DataRequired()])
-    advdrawn = IntegerField('Advance Draw (C)', validators=[DataRequired()])
+    advdrawn = StringField('Advance Draw (C)', validators=[DataRequired()])
     #netclaimed = IntegerField('Net Claim Admissible (A+B-C)', validators=[DataRequired()])
     #excesspaid = IntegerField('Excess to be paid by IITH', validators=[DataRequired()])
     #excessrecovered = IntegerField('Excess to be recovered by IITH', validators=[DataRequired()])
