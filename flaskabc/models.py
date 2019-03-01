@@ -123,7 +123,7 @@ class Contingent_a(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     dt1 = db.Column(db.String(100), nullable=False)
     des1 = db.Column(db.String(100), nullable=False)
-    amt1 = db.Column(db.Integer, nullable=False)
+    amt1 = db.Column(db.Float, nullable=False)
     contingent_id = db.Column(db.Integer, db.ForeignKey('contingent.id'))
 
 
@@ -136,7 +136,7 @@ class Tab(db.Model):
     dsgn = db.Column(db.String(100), nullable=False)
     dpt = db.Column(db.String(100), nullable=False)
     inst = db.Column(db.String(100), nullable=False)
-    bp = db.Column(db.Integer, nullable=True)
+    bp = db.Column(db.String(100), nullable=True)
     ipac = db.Column(db.String(100), nullable=False)
     poj = db.Column(db.String(100), nullable=False)
     enc = db.Column(db.Integer, nullable=False)
@@ -167,9 +167,9 @@ class Tab_a(db.Model):
     atym = db.Column(db.String(100), nullable=False)
     moj = db.Column(db.String(100), nullable=False)
     jc = db.Column(db.String(100), nullable=False)
-    road = db.Column(db.Integer, nullable=False)
+    road = db.Column(db.String(100), nullable=False)
     tktno = db.Column(db.String(100), nullable=False)
-    fare = db.Column(db.Integer, nullable=False)
+    fare = db.Column(db.Float, nullable=False)
     tab_id = db.Column(db.Integer, db.ForeignKey('tab.id'))
 
 
@@ -178,7 +178,7 @@ class Tab_b(db.Model):
     __tablename__ = 'tab_b'
     id = db.Column(db.Integer, primary_key = True)
     exp = db.Column(db.String(100), nullable=False)
-    amt22 = db.Column(db.Integer, nullable=False)
+    amt22 = db.Column(db.Float, nullable=False)
     bill = db.Column(db.String(100), nullable=False)
     tab_id = db.Column(db.Integer, db.ForeignKey('tab.id'))
 
@@ -203,5 +203,5 @@ class Reim_det(db.Model):
     cash_no = db.Column(db.String(100), nullable=False)
     firm = db.Column(db.String(100), nullable=False)
     purpose = db.Column(db.String(100), nullable=False)
-    amt = db.Column(db.Integer, nullable=False)
+    amt = db.Column(db.Float, nullable=False)
     reim_id = db.Column(db.Integer, db.ForeignKey('reim.id'))

@@ -1004,9 +1004,10 @@ def download_contingent(contingent_id):
         can.drawString(150, 520-(15*ccd), cont.des1)
         can.drawString(460, 520-(15*ccd), str(cont.amt1))
         total += cont.amt1
+    total = "%.2f" % total
     can.drawString(460, 398, str(total))
     p = inflect.engine()
-    ss = p.number_to_words(total)
+    ss = p.number_to_words(int(float(total)))
     ss = ss.upper()
     can.drawString(100, 365, ss)
     can.drawString(90, 260, contingent.curr_date)
@@ -1215,6 +1216,8 @@ def download_tab(tab_id):
     tabs_b = tab.pets2
     total_a = 0
     total_b = 0
+    total = 0
+    net = 0
     cca = -1
     ccb = -1
     #ccb = tabs_b.id - 1
@@ -1231,7 +1234,7 @@ def download_tab(tab_id):
         can.drawString(442,(550-(20*cca)), str(tab_a.road))
         can.drawString(478,(550-(20*cca)), tab_a.tktno)
         can.drawString(560,(550-(20*cca)), str(tab_a.fare))
-        total_a = total_a + int(tab_a.fare)
+        total_a = total_a + float(tab_a.fare)
     
     for tab_b in tabs_b:
         ccb = ccb + 1
@@ -1239,7 +1242,7 @@ def download_tab(tab_id):
         can.drawString(90,(330-(12*ccb)), tab_b.exp)
         can.drawString(460,(330-(12*ccb)), str(tab_b.amt22))
         can.drawString(525,(330-(12*ccb)), tab_b.bill)
-        total_b = total_b + int(tab_b.amt22)
+        total_b = total_b + float(tab_b.amt22)
     '''
     can.drawString(70,550, tab.ds)
     can.drawString(122,550,tab.dd)
@@ -1257,16 +1260,19 @@ def download_tab(tab_id):
     
     can.drawString(525,252.5, str(tab.amt22))
     '''
+    total_a = "%.2f" % total_a
+    total_b = "%.2f" % total_b
     can.drawString(525,252.5, str(total_b))
     can.drawString(550,390, str(total_a))
     can.drawString(130,241, str(tab.enc))
     can.drawString(80,231.5, tab.date)
     can.drawString(280,223, str(total_a))
     can.drawString(362,223, str(total_b))
-    total = total_a + total_b
+    total = float(total_a) + float(total_b)
+    total = "%.2f" % total
     can.drawString(215,204, str(total))
     can.drawString(215,194, str(tab.advdrawn))
-    net = total - int(tab.advdrawn)
+    net = float(total) - float(tab.advdrawn)
     can.drawString(215,184, str(net))
     #can.drawString(215,174, str(tab.excesspaid))
     #can.drawString(215,165, str(tab.excessrecovered))
@@ -1511,8 +1517,9 @@ def download_reim(reim_id):
         can.drawString(531, 488-(19*ccd), str(reim_det.amt))
         total += reim_det.amt
         count += 1
+    total = "%.2f" % total
     p = inflect.engine()
-    ss = p.number_to_words(total)
+    ss = p.number_to_words(int(float(total)))
     ss = ss.upper()
     can.drawString(170, 213, ss)
     can.drawString(530, 225, str(total))

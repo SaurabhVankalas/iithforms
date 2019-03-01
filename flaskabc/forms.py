@@ -99,7 +99,7 @@ class ContingentForm(FlaskForm):
 class Contingent_aForm(FlaskForm):
     dt1 = DateField('Date 1',format='%Y-%m-%d', validators=[DataRequired()])
     des1 = StringField('Destination 1', validators=[DataRequired()])
-    amt1 = IntegerField('Amount 1', validators=[DataRequired()])
+    amt1 = FloatField('Amount 1', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 
@@ -121,12 +121,12 @@ class TabForm(FlaskForm):
     bp = IntegerField('Basic Pay Rs')
     ipac = StringField('Institute Account/Project Account No.', validators=[DataRequired()])
     poj = StringField('Purpose of Journey', validators=[DataRequired()])
-    enc = IntegerField('No. of Enclosures', validators=[DataRequired()])
+    enc = StringField('No. of Enclosures')
     date = DateField('Date', format='%Y-%m-%d')
     #amt44 = IntegerField('Total Amount Admissible (A)', validators=[DataRequired()])
     #amt55 = IntegerField('Total Amount Admissible (B)', validators=[DataRequired()])
     #AB = IntegerField('A + B', validators=[DataRequired()])
-    advdrawn = StringField('Advance Draw (C)', validators=[DataRequired()])
+    advdrawn = StringField('Advance Draw (C)')
     #netclaimed = IntegerField('Net Claim Admissible (A+B-C)', validators=[DataRequired()])
     #excesspaid = IntegerField('Excess to be paid by IITH', validators=[DataRequired()])
     #excessrecovered = IntegerField('Excess to be recovered by IITH', validators=[DataRequired()])
@@ -146,15 +146,15 @@ class Tab_aForm(FlaskForm):
     atym = TimeField('Hour (Arrival)',format='%H:%M', validators=[DataRequired()])
     moj = SelectField('Mode of Journey(rail/air/road)',choices = [('rail','Rail'),('air','Air'),('road','Road')] ,validators=[DataRequired()])
     jc = StringField('Class', validators=[DataRequired()])
-    road = IntegerField('Road (kms)', validators=[DataRequired()])
+    road = StringField('Road (kms)')
     tktno = StringField('Flight/Train Ticket no.', validators=[DataRequired()])
-    fare = IntegerField('Fare(Rs.)', validators=[DataRequired()])
+    fare = FloatField('Fare(Rs.)', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 
 class Tab_bForm(FlaskForm):
     exp = StringField('Item of Expenditure', validators=[DataRequired()])
-    amt22 = IntegerField('Amount (Rs.)', validators=[DataRequired()])
+    amt22 = FloatField('Amount (Rs.)', validators=[DataRequired()])
     bill = StringField('Cash Bill Details', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
@@ -175,5 +175,5 @@ class Reim_detForm(FlaskForm):
     cash_no = StringField('Cash Memo No.', validators=[DataRequired()])
     firm = StringField('Name of the Firm', validators=[DataRequired()])
     purpose = StringField('Purpose', validators=[DataRequired()])
-    amt = IntegerField('Amount (Rs.)', validators=[DataRequired()])
+    amt = FloatField('Amount (Rs.)', validators=[DataRequired()])
     submit = SubmitField('Submit')
