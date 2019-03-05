@@ -49,8 +49,8 @@
           <td>{{ transaction.provider }}</td>
           <td>{{ transaction.date }}</td>
           <td>{{ transaction.amount }}</td>
-          <td><a href = "#">Update</a></td>
-          <td><a href = "#">Delete</a></td>
+    
+          <td><a href = "{{ url_for('del_transaction', trans_id = transaction.id) }}">Delete</a></td>
         </tr>
         {% endfor %}
     </tbody>

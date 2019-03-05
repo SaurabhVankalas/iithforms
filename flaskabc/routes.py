@@ -187,6 +187,14 @@ def new_transaction(tele_id):
                            form=form, legend='New Transaction')
 
 
+@app.route("/transaction/<int:trans_id>/delete_transaction", methods=['GET', 'POST'])
+@login_required
+def del_transaction(trans_id):
+    transaction = Transaction.query.get_or_404(trans_id)
+    db.session.delete(transaction)
+    db.session.commit()
+    flash('Your transaction has been deleted!', 'success')
+    return redirect(url_for('all_telephones'))
 
 
 @app.route("/<int:tele_id>/download")
@@ -1502,6 +1510,9 @@ def download_reim(reim_id):
     can.setFont("Helvetica", 10)
     ccd = -1
     total = 0
+    flag1 = 0
+    flag2 = 0
+    flag3 = 0
     reim_dets = reim.pets
     can.drawString(210, 588, reim.name)
     can.drawString(210, 570, reim.dpt)
@@ -1509,12 +1520,50 @@ def download_reim(reim_id):
     count = 1
     for reim_det in reim_dets:
         ccd += 1
+        flag = flag1 + flag2 + flag3
+        if(flag > 0):
+            ccd = ccd + 1
+        wwe = reim_det.cash_no
         can.drawString(84, 488-(19*ccd), str(count))
         can.drawString(107, 488-(19*ccd), reim_det.date)
-        can.drawString(155, 488-(19*ccd), reim_det.cash_no)
-        can.drawString(270, 488-(19*ccd), reim_det.firm)
-        can.drawString(415, 488-(19*ccd), reim_det.purpose)
-        can.drawString(531, 488-(19*ccd), str(reim_det.amt))
+        #can.drawString(213, 488-(19*ccd), reim_det.firm)
+        #can.drawString(364, 488-(19*ccd), reim_det.purpose)
+        #can.drawString(525, 488-(19*ccd), str(reim_det.amt))
+        if (len(reim_det.cash_no) > 10):
+            flag1 = 1
+            can.drawString(153, 488-(19*ccd), wwe[0:9])
+            ccd = ccd + 1
+            xx = len(reim_det.cash_no)
+            can.drawString(153, 488-(19*ccd), wwe[9:xx])
+            ccd = ccd -1
+        else :
+            flag1 = 0
+            can.drawString(153, 488-(19*ccd), reim_det.cash_no)
+        
+        if (len(reim_det.firm) > 30):
+            flag2 = 1
+            wwe1 = reim_det.firm
+            can.drawString(213, 488-(19*ccd), wwe1[0:29])
+            ccd = ccd + 1
+            xx = len(reim_det.firm)
+            can.drawString(213, 488-(19*ccd), wwe1[29:xx])
+            ccd = ccd -1
+        else :
+            flag2 = 0
+            can.drawString(213, 488-(19*ccd), reim_det.firm)
+        
+        if (len(reim_det.purpose) > 30):
+            flag3 = 1
+            wwe2 = reim_det.purpose
+            can.drawString(364, 488-(19*ccd), wwe2[0:29])
+            ccd = ccd + 1
+            xx = len(reim_det.purpose)
+            can.drawString(364, 488-(19*ccd), wwe2[29:xx])
+            ccd = ccd - 1
+        else :
+            flag3 = 0
+            can.drawString(364, 488-(19*ccd), reim_det.purpose)
+        can.drawString(525, 488-(19*ccd), str(reim_det.amt))
         total += reim_det.amt
         count += 1
     total = "%.2f" % total
