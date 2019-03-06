@@ -581,8 +581,16 @@ def download_telephone(telephone_id):
     
     #month = getmonth(str(date[5])+str(date[6]))
     can.setFont("Helvetica", 10) 
-    can.drawString(300, 463, str(month))
-    can.drawString(240, 445, str(month))
+    if(len(month)>10):
+        can.drawString(296, 470, month[:10]+'-')
+        can.drawString(296,463,month[10:])
+    else:
+        can.drawString(296, 463, str(month))
+    if(len(month)>10):
+        can.drawString(236, 453, month[:10]+'-')
+        can.drawString(236,445,month[10:])
+    else:
+        can.drawString(236, 445, str(month))
     can.drawString(482, 372, str(name))
     can.drawString(482, 358, str(designation))
     can.drawString(482, 345, str(department))
