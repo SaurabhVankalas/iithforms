@@ -178,3 +178,45 @@ class Reim_detForm(FlaskForm):
     purpose = StringField('Purpose', validators=[DataRequired()])
     amt = FloatField('Amount (Rs.)', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+
+class Opt_certForm(FlaskForm):
+    name_emp = StringField('Name of the employee', validators=[DataRequired()])
+    dsg_emp = StringField('Designation of Employee', validators=[DataRequired()])
+    emp_id = StringField('Employee ID', validators=[DataRequired()])
+    pt_nm = StringField('Name of the patient', validators=[DataRequired()])
+    age = StringField('Age', validators=[DataRequired()])
+    relationship = StringField('Relationship with the employee', validators=[DataRequired()])
+    nm_address_doc = StringField('Name of the Doctor and address', validators=[DataRequired()])
+    disease = StringField('Name of the disease', validators=[DataRequired()])
+    #duration = StringField('Purpose', validators=[DataRequired()])
+    from_date = DateField('Duration of Treatment(from)',format='%Y-%m-%d')
+    to_date = DateField('Duration of Treatment(to)',format='%Y-%m-%d')
+    referred_doc = StringField('Name of Doctor referred to patient', validators=[DataRequired()])
+    place = StringField('Place', validators=[DataRequired()])
+    date = DateField('Date',format='%Y-%m-%d')
+    submit = SubmitField('Submit')
+
+
+class Opt_cert_AForm(FlaskForm):
+    date = DateField('Date of consultation',format='%Y-%m-%d')
+    fee_consult = FloatField('Consultation Fee paid (Rs.)', validators=[DataRequired()])
+    fee_inj = FloatField('Fee paid for intravenous/intramuscular/subcutaneous injections(Rs.)', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+
+class Opt_cert_BForm(FlaskForm):
+    name = StringField('Name of the medicine', validators=[DataRequired()])
+    quantity = StringField('Quantity', validators=[DataRequired()])
+    price = FloatField('Price (Rs.)', validators=[DataRequired()])
+    cashmemo = StringField('Cash Memo No.', validators=[DataRequired()])
+    date = DateField('Date',format='%Y-%m-%d')
+    submit = SubmitField('Submit')
+
+
+class Opt_cert_CForm(FlaskForm):
+    name_test = StringField('Name of the diagnostic test', validators=[DataRequired()])
+    name_hos = StringField('Name of the diagnostic Centre/Hospital', validators=[DataRequired()])
+    date = DateField('Date of test',format='%Y-%m-%d')
+    amount = FloatField('Amount paid(Rs.)', validators=[DataRequired()])
+    submit = SubmitField('Submit')

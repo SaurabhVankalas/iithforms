@@ -2,16 +2,6 @@
 from flaskabc import db
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-'''
-class Cc(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.String(100), nullable=False)
-    def __repr__(self):
-        return '<Cc %r>' % (self.date)
-'''
-
-
-
 
 class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
@@ -205,3 +195,50 @@ class Reim_det(db.Model):
     purpose = db.Column(db.String(100), nullable=False)
     amt = db.Column(db.Float, nullable=False)
     reim_id = db.Column(db.Integer, db.ForeignKey('reim.id'))
+
+
+class Opt_cert(db.Model):
+    __tablename__ = 'opt_cert'
+    id = db.Column(db.Integer, primary_key = True)
+    name_emp = db.Column(db.String(100), nullable=False)
+    dsg_emp = db.Column(db.String(100), nullable=False)
+    emp_id = db.Column(db.String(100), nullable=False)
+    pt_nm = db.Column(db.String(100), nullable=False)
+    age = db.Column(db.String(100), nullable=False)
+    relationship = db.Column(db.String(100), nullable=False)
+    nm_address_doc = db.Column(db.String(100), nullable=False)
+    disease = db.Column(db.String(100), nullable=False)
+    #duration = db.Column(db.String(100), nullable=False)
+    from_date = db.Column(db.String(100), nullable=False)
+    to_date = db.Column(db.String(100), nullable=False)
+    referred_doc = db.Column(db.String(100), nullable=False)
+    place = db.Column(db.String(100), nullable=False)
+    date = db.Column(db.String(100), nullable=False)
+    pets1 = db.relationship('Opt_cert_A')
+    pets2 = db.relationship('Opt_cert_B')
+    pets3 = db.relationship('Opt_cert_C')
+
+
+class Opt_cert_A(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    date = db.Column(db.String(100), nullable=False)
+    fee_consult = db.Column(db.Float, nullable=False)
+    fee_inj = db.Column(db.Float, nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('opt_cert.id'))
+
+class Opt_cert_B(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(100), nullable=False)
+    quantity = db.Column(db.String(100), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    cashmemo = db.Column(db.String(100), nullable=False)
+    date = db.Column(db.String(100), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('opt_cert.id'))
+
+class Opt_cert_C(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name_test = db.Column(db.String(100), nullable=False)
+    name_hos = db.Column(db.String(100), nullable=False)
+    date = db.Column(db.String(100), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('opt_cert.id'))

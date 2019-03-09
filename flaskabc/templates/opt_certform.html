@@ -1,0 +1,215 @@
+{% extends "layout.html" %}
+{% block content %}
+
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
+
+            <div class="form-group">
+                    {{ form.name_emp.label(class="form-control-label") }}
+                                        
+                        {% if form.name_emp.errors %}
+                            {{ form.name_emp(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.name_emp.errors %}
+                                    <span>{{ error }}</span>
+                                            {% endfor %}
+                            </div>
+                         {% else %}
+                                {{ form.name_emp(class="form-control form-control-lg") }}
+                        {% endif %}
+            </div>
+            <div class="form-group">
+                    {{ form.dsg_emp.label(class="form-control-label") }}
+                                        
+                        {% if form.dsg_emp.errors %}
+                            {{ form.dsg_emp(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.dsg_emp.errors %}
+                                    <span>{{ error }}</span>
+                                            {% endfor %}
+                            </div>
+                         {% else %}
+                                {{ form.dsg_emp(class="form-control form-control-lg") }}
+                        {% endif %}
+            </div>
+        
+
+            <div class="form-group">
+                    {{ form.emp_id.label(class="form-control-label") }}
+                                        
+                        {% if form.emp_id.errors %}
+                            {{ form.emp_id(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.emp_id.errors %}
+                                    <span>{{ error }}</span>
+                                            {% endfor %}
+                            </div>
+                         {% else %}
+                                {{ form.emp_id(class="form-control form-control-lg") }}
+                        {% endif %}
+            </div>
+            <div class="form-group">
+                    {{ form.pt_nm.label(class="form-control-label") }}
+                                        
+                        {% if form.pt_nm.errors %}
+                            {{ form.pt_nm(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.pt_nm.errors %}
+                                    <span>{{ error }}</span>
+                                            {% endfor %}
+                            </div>
+                         {% else %}
+                                {{ form.pt_nm(class="form-control form-control-lg") }}
+                        {% endif %}
+            </div>
+            <div class="form-group">
+                    {{ form.age.label(class="form-control-label") }}
+                                        
+                        {% if form.age.errors %}
+                            {{ form.age(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.age.errors %}
+                                    <span>{{ error }}</span>
+                                            {% endfor %}
+                            </div>
+                         {% else %}
+                                {{ form.age(class="form-control form-control-lg") }}
+                        {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.relationship.label(class="form-control-label") }}
+                                    
+                    {% if form.relationship.errors %}
+                        {{ form.relationship(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.relationship.errors %}
+                                <span>{{ error }}</span>
+                                        {% endfor %}
+                        </div>
+                     {% else %}
+                            {{ form.relationship(class="form-control form-control-lg") }}
+                    {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.nm_address_doc.label(class="form-control-label") }}
+                                
+                {% if form.nm_address_doc.errors %}
+                    {{ form.nm_address_doc(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.nm_address_doc.errors %}
+                            <span>{{ error }}</span>
+                                    {% endfor %}
+                    </div>
+                 {% else %}
+                        {{ form.nm_address_doc(class="form-control form-control-lg") }}
+                {% endif %}
+    </div>
+    <div class="form-group">
+        {{ form.disease.label(class="form-control-label") }}
+                            
+            {% if form.disease.errors %}
+                {{ form.disease(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.disease.errors %}
+                        <span>{{ error }}</span>
+                                {% endfor %}
+                </div>
+             {% else %}
+                    {{ form.disease(class="form-control form-control-lg") }}
+            {% endif %}
+</div>
+<div class="form-group">
+    {{ form.from_date.label(class="form-control-label") }}
+                        
+        {% if form.from_date.errors %}
+            {{ form.from_date(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.from_date.errors %}
+                    <span>{{ error }}</span>
+                            {% endfor %}
+            </div>
+         {% else %}
+                {{ form.from_date(class="form-control form-control-lg") }}
+        {% endif %}
+</div>
+<div class="form-group">
+    {{ form.to_date.label(class="form-control-label") }}
+                        
+        {% if form.to_date.errors %}
+            {{ form.to_date(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.to_date.errors %}
+                    <span>{{ error }}</span>
+                            {% endfor %}
+            </div>
+         {% else %}
+                {{ form.to_date(class="form-control form-control-lg") }}
+        {% endif %}
+</div>
+<div class="form-group">
+    {{ form.referred_doc.label(class="form-control-label") }}
+                        
+        {% if form.referred_doc.errors %}
+            {{ form.referred_doc(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.referred_doc.errors %}
+                    <span>{{ error }}</span>
+                            {% endfor %}
+            </div>
+         {% else %}
+                {{ form.referred_doc(class="form-control form-control-lg") }}
+        {% endif %}
+</div>
+<div class="form-group">
+    {{ form.place.label(class="form-control-label") }}
+                        
+        {% if form.place.errors %}
+            {{ form.place(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.place.errors %}
+                    <span>{{ error }}</span>
+                            {% endfor %}
+            </div>
+         {% else %}
+                {{ form.place(class="form-control form-control-lg") }}
+        {% endif %}
+</div>
+<div class="form-group">
+    {{ form.date.label(class="form-control-label") }}
+                        
+        {% if form.date.errors %}
+            {{ form.date(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.date.errors %}
+                    <span>{{ error }}</span>
+                            {% endfor %}
+            </div>
+         {% else %}
+                {{ form.date(class="form-control form-control-lg") }}
+        {% endif %}
+</div>
+
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+  {{ super() }}
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $('#datepick').datetimepicker();
+    });
+  </script>
+{% endblock %}

@@ -3,8 +3,8 @@ import os
 import xlsxwriter
 from flask import Flask, render_template, url_for, flash, redirect, request, abort, send_file, send_from_directory, Blueprint
 from flaskabc import app, db
-from flaskabc.forms import TransactionForm, LoginForm, TelephoneForm, Travel_allwForm, ContingentForm, TabForm, Tab_aForm, Tab_bForm, Contingent_aForm, Reim_detForm, ReimForm, RegistrationForm
-from flaskabc.models import Transaction, User, Telephone, Contingent, Travel_allw, Tab, Tab_a, Tab_b, Contingent_a, Reim, Reim_det
+from flaskabc.forms import TransactionForm, LoginForm, TelephoneForm, Travel_allwForm, ContingentForm, TabForm, Tab_aForm, Tab_bForm, Contingent_aForm, Reim_detForm, ReimForm, RegistrationForm,Opt_cert_AForm,Opt_cert_BForm,Opt_cert_CForm,Opt_certForm
+from flaskabc.models import Transaction, User, Telephone, Contingent, Travel_allw, Tab, Tab_a, Tab_b, Contingent_a, Reim, Reim_det, Opt_cert,Opt_cert_A,Opt_cert_B,Opt_cert_C
 from werkzeug import secure_filename
 from io import BytesIO
 import os
@@ -1523,6 +1523,7 @@ def download_reim(reim_id):
     flag3 = 0
     reim_dets = reim.pets
     can.drawString(210, 588, reim.name)
+    #can.showPage()
     can.drawString(210, 570, reim.dpt)
     #can.drawString(210, 550, reim.net_claimed)
     count = 1
@@ -1605,4 +1606,297 @@ def download_reim(reim_id):
     path51 = os.getcwd() + '/' +reim.name + "_reim.pdf"
     return send_file(path51, attachment_filename=reim.name + "_reim.pdf", as_attachment=True)
 
+
+########################################################################################################################################################
+
+
+@app.route("/all_opt_cert")
+@login_required
+def all_opt_cert():
+    opt_certs = Opt_cert.query.all()
+    return render_template('opt_cert.html', opt_certs=opt_certs)
+
+
+@app.route("/opt_cert/new/manual", methods=['GET', 'POST'])
+@login_required
+def new_opt_cert():
+    form = Opt_certForm()
+    if form.validate_on_submit():
+        opt_cert = Opt_cert(name_emp = form.name_emp.data, dsg_emp = form.dsg_emp.data, emp_id = form.emp_id.data, pt_nm = form.pt_nm.data, age = form.age.data, relationship=form.relationship.data, nm_address_doc = form.nm_address_doc.data, disease = form.disease.data, from_date=str(form.from_date.data.strftime('%d/%m/%y')),to_date = str(form.to_date.data.strftime('%d/%m/%y')),referred_doc = form.referred_doc.data, place = form.place.data, date = str(form.date.data.strftime('%d/%m/%y')))
+        db.session.add(opt_cert)
+        db.session.commit()
+        flash('Your Opt Certificate A Form has been created!', 'success')
+        return redirect(url_for('all_opt_cert'))
+    return render_template('opt_certform.html', title='New Opt Certificate A Form',
+                           form=form, legend='New Opt Certificate A Form')
+
+
+
+@app.route("/opt_cert/new/default", methods=['GET', 'POST'])
+@login_required
+def new_opt_cert_default():
+    form = Opt_certForm()
+    user_id = current_user.get_id()
+    user = User.query.get_or_404(int(user_id))
+    form.name_emp.data = user.name
+    form.dsg_emp.data = user.dsgn
+    form.emp_id.data = user.id_no
+    if form.validate_on_submit():
+        opt_cert = Opt_cert(name_emp = form.name_emp.data, dsg_emp = form.dsg_emp.data, emp_id = form.emp_id.data, pt_nm = form.pt_nm.data, age = form.age.data, relationship=form.relationship.data, nm_address_doc = form.nm_address_doc.data, disease = form.disease.data, from_date=str(form.from_date.data.strftime('%d/%m/%y')),to_date = str(form.to_date.data.strftime('%d/%m/%y')),referred_doc = form.referred_doc.data, place = form.place.data, date = str(form.date.data.strftime('%d/%m/%y')))
+        db.session.add(opt_cert)
+        db.session.commit()
+        flash('Your Opt Certificate A Form has been created!', 'success')
+        return redirect(url_for('all_opt_cert'))
+    return render_template('opt_certform.html', title='New Opt Certificate A Form',
+                           form=form, legend='New Opt Certificate A Form')
+
+
+@app.route("/delete_opt_certs")
+@login_required
+def delete_opt_certs():
+   opt_certs = Opt_cert.query.all()
+   for opt_cert in opt_certs:
+      db.session.delete(opt_cert)
+      db.session.commit()
+   flash('All Opt Certificate A data has been deleted!', 'success')
+   return redirect(url_for('all_opt_cert'))
+
+
+@app.route("/opt_cert/<int:opt_cert_id>/delete")
+@login_required
+def delete_opt_cert(opt_cert_id):
+    opt_cert = Opt_cert.query.get_or_404(opt_cert_id)
+    db.session.delete(opt_cert)
+    db.session.commit()
+    flash('Your Opt Certificate A form entry has been deleted!', 'success')
+    return redirect(url_for('all_opt_cert'))
+
+
+@app.route("/opt_cert/<int:opt_cert_id>/update", methods=['GET', 'POST'])
+@login_required
+def update_opt_cert(opt_cert_id):
+    opt_cert = Opt_cert.query.get_or_404(opt_cert_id)
+    
+    form = Opt_certForm()
+    if form.validate_on_submit():
+        opt_cert.name_emp = form.name_emp.data
+        opt_cert.dsg_emp = form.dsg_emp.data
+        opt_cert.emp_id = form.emp_id.data
+        opt_cert.pt_nm = form.pt_nm.data
+        opt_cert.age = form.age.data
+        opt_cert.relationship = form.relationship.data
+        opt_cert.nm_address_doc = form.nm_address_doc.data
+        opt_cert.disease = form.disease.data
+        opt_cert.from_date = str(form.from_date.data.strftime('%d/%m/%y'))
+        opt_cert.to_date = str(form.to_date.data.strftime('%d/%m/%y'))
+        opt_cert.referred_doc = form.referred_doc.data
+        opt_cert.place = form.place.data
+        opt_cert.date = str(form.date.data.strftime('%d/%m/%y'))
+        db.session.commit()
+        flash('Your Opt Certificate A form entry has been updated!', 'success')
+        return redirect(url_for('all_opt_cert'))
+    elif request.method == 'GET':  
+        form.name_emp.data = opt_cert.name_emp
+        form.dsg_emp.data = opt_cert.dsg_emp
+        form.emp_id.data = opt_cert.emp_id
+        form.pt_nm.data = opt_cert.pt_nm
+        form.age.data = opt_cert.age
+        form.relationship.data = opt_cert.relationship
+        form.nm_address_doc.data = opt_cert.nm_address_doc
+        form.disease.data = opt_cert.disease
+        form.from_date.data = datetime.strptime(opt_cert.from_date, '%d/%m/%y')
+        form.to_date.data = datetime.strptime(opt_cert.to_date, '%d/%m/%y')
+        form.referred_doc.data = opt_cert.referred_doc
+        form.place.data = opt_cert.place
+        form.date.data = datetime.strptime(opt_cert.date, '%d/%m/%y')
+    return render_template('opt_certform.html',title='Update Opt Certificate A Form',form=form, legend='Update Reimbursement Form')
+
+
+
+@app.route("/opt_cert/<int:opt_cert_id>/all_opt_cert_a")
+@login_required
+def all_opt_cert_a(opt_cert_id):
+    opt_cert = Opt_cert.query.get_or_404(opt_cert_id)
+    opt_certs_a = opt_cert.pets1
+    return render_template('opt_cert_a.html', opt_certs_a=opt_certs_a, opt_cert = opt_cert)
+
+
+@app.route("/opt_cert/<int:opt_cert_id>/new_opt_cert_a",methods=['GET', 'POST'])
+@login_required
+def new_opt_cert_a(opt_cert_id):
+    form = Opt_cert_AForm()
+    if form.validate_on_submit():
+        opt_cert_a = Opt_cert_A(date = str(form.date.data.strftime('%d/%m/%y')),fee_consult = form.fee_consult.data,fee_inj = form.fee_inj.data,owner_id = opt_cert_id)
+        db.session.add(opt_cert_a)
+        db.session.commit()
+        flash('Your Opt Certificate(Part A) Form Detail entry has been created!', 'success')
+        return redirect(url_for('all_opt_cert'))
+    return render_template('opt_cert_aform.html', title='New Opt Certificate(Part A) Detail Form',
+                           form=form, legend='New Opt Certificate(Part A) Detail Form')
+
+
+@app.route("/opt_cert/<int:opt_cert_a_id>/delete_opt_cert_a")
+@login_required
+def delete_opt_cert_a(opt_cert_a_id):
+    opt_cert_a = Opt_cert_A.query.get_or_404(opt_cert_a_id)
+    db.session.delete(opt_cert_a)
+    db.session.commit()
+    flash('Entry Deleted', 'success')
+    return redirect(url_for('all_opt_cert'))
+
+
+
+@app.route("/opt_cert/<int:opt_cert_id>/all_opt_cert_b")
+@login_required
+def all_opt_cert_b(opt_cert_id):
+    opt_cert = Opt_cert.query.get_or_404(opt_cert_id)
+    opt_certs_b = opt_cert.pets2
+    return render_template('opt_cert_b.html', opt_certs_b=opt_certs_b, opt_cert = opt_cert)
+
+
+@app.route("/opt_cert/<int:opt_cert_id>/new_opt_cert_b",methods=['GET', 'POST'])
+@login_required
+def new_opt_cert_b(opt_cert_id):
+    form = Opt_cert_BForm()
+    if form.validate_on_submit():
+        opt_cert_b = Opt_cert_B(date = str(form.date.data.strftime('%d/%m/%y')),quantity = form.quantity.data,price = form.price.data,cashmemo = form.cashmemo.data,name = form.name.data,owner_id = opt_cert_id)
+        db.session.add(opt_cert_b)
+        db.session.commit()
+        flash('Your Opt Certificate(Part B) Form Detail entry has been created!', 'success')
+        return redirect(url_for('all_opt_cert'))
+    return render_template('opt_cert_bform.html', title='New Opt Certificate(Part B) Detail Form',
+                           form=form, legend='New Opt Certificate(Part B) Detail Form')
+
+
+@app.route("/opt_cert/<int:opt_cert_b_id>/delete_opt_cert_b")
+@login_required
+def delete_opt_cert_b(opt_cert_b_id):
+    opt_cert_b = Opt_cert_B.query.get_or_404(opt_cert_b_id)
+    db.session.delete(opt_cert_b)
+    db.session.commit()
+    flash('Entry Deleted', 'success')
+    return redirect(url_for('all_opt_cert'))
+
+
+
+@app.route("/opt_cert/<int:opt_cert_id>/all_opt_cert_c")
+@login_required
+def all_opt_cert_c(opt_cert_id):
+    opt_cert = Opt_cert.query.get_or_404(opt_cert_id)
+    opt_certs_c = opt_cert.pets3
+    return render_template('opt_cert_c.html', opt_certs_c=opt_certs_c, opt_cert = opt_cert)
+
+
+@app.route("/opt_cert/<int:opt_cert_id>/new_opt_cert_c",methods=['GET', 'POST'])
+@login_required
+def new_opt_cert_c(opt_cert_id):
+    form = Opt_cert_CForm()
+    if form.validate_on_submit():
+        opt_cert_c = Opt_cert_C(date = str(form.date.data.strftime('%d/%m/%y')),name_test = form.name_test.data,name_hos = form.name_hos.data,amount = form.amount.data,owner_id = opt_cert_id)
+        db.session.add(opt_cert_c)
+        db.session.commit()
+        flash('Your Opt Certificate(Part C) Form Detail entry has been created!', 'success')
+        return redirect(url_for('all_opt_cert'))
+    return render_template('opt_cert_cform.html', title='New Opt Certificate(Part C) Detail Form',
+                           form=form, legend='New Opt Certificate(Part C) Detail Form')
+
+
+@app.route("/opt_cert/<int:opt_cert_c_id>/delete_opt_cert_c")
+@login_required
+def delete_opt_cert_c(opt_cert_c_id):
+    opt_cert_c = Opt_cert_C.query.get_or_404(opt_cert_c_id)
+    db.session.delete(opt_cert_c)
+    db.session.commit()
+    flash('Entry Deleted', 'success')
+    return redirect(url_for('all_opt_cert'))
+
+
+
+@app.route("/opt_cert/<int:opt_cert_id>/download", methods=['GET', 'POST'])
+@login_required
+def download_opt_cert(opt_cert_id):
+    opt_cert = Opt_cert.query.get_or_404(opt_cert_id)
+    opt_certs_a = opt_cert.pets1
+    opt_certs_b = opt_cert.pets2
+    opt_certs_c = opt_cert.pets3
+    packet = io.BytesIO()
+# create a new PDF with Reportlab
+    can = canvas.Canvas(packet,pagesize=A4)
+    can.setFont("Helvetica", 13)
+    ccd = 0
+    total = 0
+    total_a = 0
+    total_b = 0
+    total_c = 0
+    '''
+    
+        can.drawString(84, 488-(19*ccd), str(count))
+        
+    '''
+    can.drawString(170, 680, opt_cert.name_emp)
+    can.drawString(373, 680, opt_cert.dsg_emp)
+    can.drawString(492, 680, opt_cert.emp_id)
+    can.drawString(315, 617, opt_cert.pt_nm)
+    can.drawString(315, 600, opt_cert.age)
+    can.drawString(315, 587, opt_cert.relationship)
+    nmadd = opt_cert.nm_address_doc
+    if len(nmadd)>37:
+        can.drawString(315, 573, nmadd[:37])
+        can.drawString(315, 560, nmadd[37:])
+    else:
+        can.drawString(315, 573, nmadd)
+    can.drawString(315, 535, opt_cert.disease)
+    can.drawString(373, 516, opt_cert.from_date)
+    can.drawString(373, 503, opt_cert.to_date)
+    for opt_cert_a in opt_certs_a:
+        can.drawString(145, (374-21*ccd), opt_cert_a.date)
+        can.drawString(230, (374-21*ccd), str(opt_cert_a.fee_consult))
+        can.drawString(362, (374-21*ccd), str(opt_cert_a.fee_inj))
+        ccd = ccd + 1
+        total_a = total_a + opt_cert_a.fee_consult + opt_cert_a.fee_inj
+    ccd = 0
+    for opt_cert_b in opt_certs_b:
+        can.drawString(145, (212-21*ccd), opt_cert_b.name)
+        can.drawString(280, (212-21*ccd), str(opt_cert_b.quantity))
+        can.drawString(337, (212-21*ccd), str(opt_cert_b.price))
+        can.drawString(390, (212-21*ccd), str(opt_cert_b.cashmemo))
+        can.drawString(490, (212-21*ccd), str(opt_cert_b.date))
+        ccd = ccd + 1
+        total_b = total_b + opt_cert_b.price
+    can.showPage()
+    ccd = 0
+    for opt_cert_c in opt_certs_c:
+        can.drawString(130, (696-21*ccd), opt_cert_c.name_test)
+        can.drawString(257, (696-21*ccd), str(opt_cert_c.name_hos))
+        can.drawString(400, (696-21*ccd), str(opt_cert_c.date))
+        can.drawString(490, (696-21*ccd), str(opt_cert_c.amount))
+        ccd = ccd + 1
+        total_c = total_c + opt_cert_c.amount
+    total = total_a + total_b + total_c
+    can.drawString(285, 579, str(total))
+    can.drawString(328, 260, str(opt_cert.referred_doc))
+    can.drawString(145, 190, str(opt_cert.place))
+    can.drawString(135, 162, str(opt_cert.date))
+    can.save()
+#move to the beginning of the StringIO buffer
+    packet.seek(0)
+    new_pdf = PdfFileReader(packet)
+# read your existing PDF
+    cw = os.getcwd()
+    filepath = cw + "/static"
+    existing_pdf = PdfFileReader(open((filepath+"/cert_A_OPT.pdf"), "rb"))
+    output = PdfFileWriter()
+# add the "watermark" (which is the new pdf) on the existing page
+    page = existing_pdf.getPage(0)
+    page.mergePage(new_pdf.getPage(0))
+    page2 = existing_pdf.getPage(1)
+    page2.mergePage(new_pdf.getPage(1))
+    output.addPage(page)
+    output.addPage(page2)
+# finally, write "output" to a real file
+    outputStream = open(opt_cert.name_emp+"_optcert.pdf", "wb")
+    output.write(outputStream)
+    outputStream.close()
+    path51 = os.getcwd() + '/' +opt_cert.name_emp + "_optcert.pdf"
+    return send_file(path51, attachment_filename=opt_cert.name_emp + "_reim.pdf", as_attachment=True)
 

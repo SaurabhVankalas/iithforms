@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block content %}
+<p><a href = "{{ url_for('new_opt_cert_a', opt_cert_id = opt_cert.id) }}"> Create new Opt Certificate(Part A) Detail Entry?</a> </p>
+
+<head>
+    <style>
+    #customers {
+      font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    #customers td, #customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    
+    #customers tr:nth-child(even){background-color: #f2f2f2;}
+    
+    #customers tr:hover {background-color: #ddd;}
+    
+    #customers th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #4CAF50;
+      color: white;
+    }
+    </style>
+    </head>
+<body>
+  <table id="customers">
+      
+      <thead>
+    
+    <thead>
+        <tr>
+            <th>Date of consultation</th>
+            <th>Consultation Fee Paid </th>
+            <th>Fee paid for injections</th>
+          </tr>
+    </thead>
+    <tbody>
+        {% for opt_cert_a in opt_certs_a %}
+        <tr>
+          <td>{{ opt_cert_a.date }}</td>
+          <td>{{ opt_cert_a.fee_consult }}</td>
+          <td>{{ opt_cert_a.fee_inj }}</td>
+          
+          <td><a href = "{{ url_for('delete_opt_cert_a', opt_cert_a_id = opt_cert_a.id) }}">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    
+  </table>
+</body>
+    
+{% endblock content %}
+
+
