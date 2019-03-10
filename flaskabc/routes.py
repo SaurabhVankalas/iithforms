@@ -1894,9 +1894,9 @@ def download_opt_cert(opt_cert_id):
     output.addPage(page)
     output.addPage(page2)
 # finally, write "output" to a real file
-    outputStream = open(opt_cert.name_emp+"_optcert.pdf", "wb")
+    outputStream = open(str(opt_cert.id)+"_optcert.pdf", "wb")
     output.write(outputStream)
     outputStream.close()
-    path51 = os.getcwd() + '/' +opt_cert.name_emp + "_optcert.pdf"
-    return send_file(path51, attachment_filename=opt_cert.name_emp + "_reim.pdf", as_attachment=True)
+    path51 = os.getcwd() + '/' +str(opt_cert.id) + "_optcert.pdf"
+    return send_file(path51, attachment_filename=str(opt_cert.id) + "_optcert.pdf", as_attachment=True)
 
