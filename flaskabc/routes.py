@@ -1233,16 +1233,18 @@ def download_tab(tab_id):
     total_a = 0
     total_b = 0
     total = 0
+    flag1 = 0
+    flag2 = 0
     net = 0
     cca = -1
     ccb = -1
     #ccb = tabs_b.id - 1
     for tab_a in tabs_a:
         cca = cca + 1
-        can.drawString(70,(550-(20*cca)), tab_a.ds)
+        #can.drawString(70,(550-(20*cca)), tab_a.ds)
         can.drawString(122,(550-(20*cca)),tab_a.dd)
         can.drawString(175,(550-(20*cca)), tab_a.dtym)
-        can.drawString(215,(550-(20*cca)), tab_a.arst)
+        #can.drawString(215,(550-(20*cca)), tab_a.arst)
         can.drawString(275,(550-(20*cca)), tab_a.ad)
         can.drawString(326,(550-(20*cca)), tab_a.atym)
         can.drawString(360, (550-(20*cca)), tab_a.moj)
@@ -1251,6 +1253,30 @@ def download_tab(tab_id):
         can.drawString(478,(550-(20*cca)), tab_a.tktno)
         can.drawString(560,(550-(20*cca)), str(tab_a.fare))
         total_a = total_a + float(tab_a.fare)
+        dep_st = tab_a.ds
+        arr_st = tab_a.arst
+        if len(dep_st) > 9:
+            flag1 = 1
+            can.drawString(70,(550-(20*cca)), dep_st[:9])
+            cca = cca + 1
+            can.drawString(70,(550-(20*cca)), dep_st[9:])
+            cca = cca - 1
+        else:
+            flag1 = 0
+            can.drawString(70,(550-(20*cca)), tab_a.ds)
+        if len(arr_st) > 13:
+            flag2 = 1
+            can.drawString(203,(550-(20*cca)), arr_st[:13])
+            cca = cca + 1
+            can.drawString(203,(550-(20*cca)), arr_st[13:])
+            cca = cca - 1
+        else:
+            flag2 = 0
+            can.drawString(203,(550-(20*cca)), tab_a.arst)
+        #cca = cca + 1
+        if flag1 == 1 or flag2 == 1:
+            cca = cca + 1
+
     
     for tab_b in tabs_b:
         ccb = ccb + 1
