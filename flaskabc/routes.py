@@ -1026,8 +1026,8 @@ def download_contingent(contingent_id):
     ss = p.number_to_words(int(float(total)))
     ss = ss.upper()
     can.drawString(100, 365, ss)
-    can.drawString(90, 260, contingent.curr_date)
-    can.drawString(130, 245, contingent.station)
+    can.drawString(90, 260, contingent.station)
+    can.drawString(130, 245, contingent.curr_date)
     can.drawString(425, 215, contingent.name)
     can.drawString(425, 197, contingent.address)
     can.drawString(230, 85, contingent.bankbranch)
@@ -1226,7 +1226,13 @@ def download_tab(tab_id):
     can.setFont("Helvetica", 10)
     can.drawString(345,673, tab.inst)
     can.drawString(113,653, str(tab.bp))
-    can.drawString(494,651, str(tab.ipac))
+    wwer = str(tab.ipac)
+    if len(wwe) > 31:
+        can.drawString(494,651, wwer[:15])
+        can.drawString(494,640, wwer[15:30])
+        can.drawString(494,629, wwer[30:])
+    else :
+        can.drawString(494,651, wwer)
     can.drawString(140,632, tab.poj)
     tabs_a = tab.pets1
     tabs_b = tab.pets2
