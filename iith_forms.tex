@@ -1,0 +1,197 @@
+\documentclass[journal,12pt,twocolumn]{IEEEtran}
+\usepackage[utf8]{inputenc}
+
+\title{IITH-Forms}
+\author{ Saurabh Vankalas and GVV Sharma}
+\date{April 2019}
+
+\begin{document}
+
+\maketitle
+
+\section {\textbf{Introduction}}
+Its a software where we can display data onto a pdf forms of IITH where data is entered through html forms.
+\section {\textbf{Installation}}
+\begin{flushleft}
+Step 1: sudo apt-get install python3.6 \\
+Step 2: sudo apt install python3-pip \\
+Step 3: pip install -r requirements.txt \\
+Step 4: sudo apt install git-all \\
+Step 5: git clone https://github.com/SaurabhVankalas/iithforms.git \\
+\end{flushleft}
+\section {\textbf{Running the project on flask local server}}
+
+\subsection{\textbf{Type the below commands on console window}}
+\begin{flushleft}
+1. cd iithforms \\
+2. python3 createdb.py (sets all the database tables)\\
+3. python3 app.py (starts the local flask server) \\
+4. Type the url 0.0.0.0:8080 in your browser \\
+\end{flushleft}
+\section{\textbf{Flow}}
+\begin{flushleft}
+We are using SQLAlchemy as our database. We will be using the following libraries within our project: \par
+
+1. SQLAlchemy (via Flask-SQLAlchemy) \\
+2. WTForms (via Flask-WTF) \\
+3. Flask \\
+4. XlsxWriter (Managing xlsx files) \\
+5. wtforms-html5 (Forms) \\
+6. inflect (conversion of nomber to words) \\
+7. flask-login (Login manager)\\
+8. gunicorn (Creating server)\\
+9. pyPDF2 (Reading PDFs)\\
+10.Nginx (Creatong server)\\
+11. reportlab (Creating and merging PDF)\\
+\end{flushleft}
+\subsection{\textbf{Structuring The Application Directory}}
+\begin{flushleft}
+\texttt{-{}-}iithforms (folder)\\
+\qquad \texttt{-{}-}app.py \\
+\qquad \texttt{-{}-}createdb.py \\
+\qquad \texttt{-{}-}requirements.txt \\
+\qquad \texttt{-{}-}static (folder)\\
+\qquad \texttt{-{}-}flaskabc (folder)\\ 
+\qquad \qquad \texttt{-{}-}\_\_init\_\_.py \\        
+\qquad \qquad \texttt{-{}-}models.py \\
+\qquad \qquad \texttt{-{}-}routes.py \\
+\qquad \qquad \texttt{-{}-}forms.py \\
+\qquad \qquad \texttt{-{}-}templates (folder)\\
+\qquad \qquad \texttt{-{}-}static (folder)\\
+\end{flushleft}
+\subsection{\textbf{Uses of all files}}
+\begin{flushleft}
+1. \_\_init\_\_.py : Declares the flask app(variable name:app) and SQLAlchemy database(variable name:db). \\
+2. models.py : Contains all the classes which will be converted into database tables.\\
+3. forms.py : With the help of WTForms library its very easy to manage the data subitted by the browser, and the process is easy to manage.\\
+4. routes.py : Here, all the objects from forms.py and models.py are imported here, and the actual functions are written here. Its the processing unit. \\
+5. templates : All the templates are stored in this folder, which are required for the project. \\
+6. createdb.py : Creates database and tables. \\
+7. app.py : Runs the project on a flask local server. \\
+\end{flushleft}
+
+\subsection{\textbf{Understanding Code}}
+\begin{flushleft}
+We will understand the code for Contingent form. The similar code is used for other forms.
+\end{flushleft}
+\subsubsection{\textbf{\_\_init\_\_.py}}
+\begin{flushleft}
+\hrule
+from flask import Flask \\
+from flask\_sqlalchemy import SQLAlchemy \\
+app = Flask(\_\_name\_\_) \\
+app.config['SECRET\_KEY'] = 'aaf' \\
+app.config['SQLALCHEMY\_DATABASE\_URI'] = 'sqlite:///site.db' \\
+db = SQLAlchemy(app) \\
+
+from flaskabc import routes \\
+\hrule
+Here,our Flask app is set, and SQLAlchemy database is set up to use.
+\end{flushleft}
+
+\subsubsection{\textbf{models.py}}
+\begin{flushleft}
+\hrule
+class Contingent(db.Model): \\
+\qquad    \_\_tablename\_\_ \= 'contingent'\\
+\qquad    id = db.Column(db.Integer, primary\_key=True) \\
+\qquad    curr\_date = db.Column(db.String(100), nullable=False) \\
+\qquad    station = db.Column(db.String(100), nullable=False) \\
+\qquad    name = db.Column(db.String(100), nullable=False) \\
+\qquad    address = db.Column(db.String(100), nullable=False) \\
+\qquad    bankbranch = db.Column(db.String(100), nullable=False) \\ 
+\qquad    acc\_num = db.Column(db.String(100), nullable=False) \\
+\qquad    ifsc = db.Column(db.String(100), nullable=False) \\
+\qquad    pets = db.relationship('Contingent\_a') \\
+
+\qquad    def \_\_repr\_\_(self): \\
+\qquad\qquad        return '<Contigent %r>' % (self.name) \\
+
+\hrule
+class Contingent\_a(db.Model): \\
+\qquad    id = db.Column(db.Integer, primary\_key=True) \\
+\qquad    dt1 = db.Column(db.String(100), nullable=False) \\
+\qquad    des1 = db.Column(db.String(100), nullable=False)\\
+\qquad    amt1 = db.Column(db.Float, nullable=False)\\
+\qquad    contingent\_id = db.Column(db.Integer,db.ForeignKey('contingent.id'))\\
+\hrule
+
+
+\end{flushleft}
+For the common case of having one Flask application all we have to do is to create our Flask application, load the configuration of choice and then create the SQLAlchemy object by passing it the application.\par
+
+Once created, that object then contains all the functions and helpers from both sqlalchemy and sqlalchemy.orm. Furthermore it provides a class called Model that is a declarative base which can be used to declare models:\par
+
+The db.Column creates a column in the sqlalchemy database, and db.model creates a table with name contingent. We have two classes here, i.e. contingent and contingent\_a. The contingent is the parent class and contingent\_a is the child class. The contingent data, can contain several contingent\_a data, therefore its a one to many relationship between two database tables.\par
+
+We achieve this my declaring a column in the contingent\_a table which will store its parent's id as a foreign key. \par
+
+\subsubsection{\textbf{forms.py}}
+\begin{flushleft}
+\hrule
+class ContingentForm(FlaskForm): \\
+\qquad    curr\_date = DateField('Date',format='\%Y\-\%m\-\%d') \\
+\qquad    station = StringField('Station', validators=[DataRequired()]) \\
+\qquad    name = StringField('Name', validators=[DataRequired()]) \\
+\qquad    address = StringField('Address', validators=[DataRequired()]) \\
+\qquad    bankbranch = StringField('Bank Name \& Branch',  validators=[DataRequired()])\\
+\qquad    acc\_num = StringField('Bank Account Number', validators=[DataRequired()])\\
+\qquad    ifsc = StringField('IFSC Code', validators=[DataRequired()])\\
+\qquad    submit = SubmitField('Submit')\\
+
+\hrule
+
+class Contingent\_aForm(FlaskForm):\\
+\qquad dt1 = DateField('Date 1',format='\%Y\-\%m\-\%d', validators=[DataRequired()])\\
+    \qquad des1 = StringField('Destination 1', validators=[DataRequired()])\\
+    \qquad amt1 = FloatField('Amount 1', validators=[DataRequired()])\\
+    \qquad submit = SubmitField('Submit')\\
+\hrule
+
+\end{flushleft}
+\subsubsection{\textbf{contingentform.html (Template)}}
+This html template consists of the form that browser submits the data to the database. WTForms library makes it easier to access and manage the forms. \par
+Similar template form is made for contingent\_a form. The sole purpose of these templates is to accept data from the browser and submit it to the database. After pressing the submit button the corresponding function in routes.py file is executed, and the code checks for errors. If no error, data is stored as an entry into the database table.
+\subsubsection{\textbf{contingent.html (Template)}}
+This html template consists of the form that browser submits the data to the database. WTForms library makes it easier to access and manage the forms.
+
+\subsubsection{\textbf{routes.py}}
+In this file, the functions are executed. Functions such as download the form, create a new form, update and delete the forms are executed here. \par
+First, we import all the forms and models. We check whether the user is trying the get or post data into the html. If the request method is GET, then the form is passed on to the template and the template is viewed. \par
+
+If the user is trying to post information into database, we check whether its a post request, if it is, then we take the form data, and create a object for the corresponding class. We store that data into the object. Now, the object is saved in the database using the command db.session.add(data), db.session.commit(). Assuming data is our object. For delete, we use db.session.delete(data) followed by db.session.commit(). \par
+
+For the download function, we use reportlab library. We initialise a stream of string data and then create a pdf where the object data has to be displayed. We can specify the coordinates for each object data. Then we merge the blank contingent form with this new pdf and we have our object data displayed with in the contingent form. We save this new merged pdf and send it to the browser if user wishes to download it. \par 
+\subsubsection{\textbf{createdb.py}}
+Here, we import db from our module and the command db.create\_all() will create the database and the tables and corresponding coloumns.
+
+\subsubsection{\textbf{app.py}}
+app.run(host=0.0.0.0,port=8080) will run the project and start the server with the corresponding host and port number.
+
+\subsubsection{\textbf{Deploy on Nginx}}
+\begin{flushleft}
+Install Nginx on the machine:\\
+\textbf{sudo apt-get install nginx\\}
+Run the app locally through flask and then open another window of terminal. We need to make configuration file so as to make nginx listen to our flask app.\\
+\textbf{sudo nano /etc/nginx/conf.d/virtual.conf\\}
+Paste the following code onto the configuration file.\\
+\hrule
+server \{ \\
+\qquad    listen       80;\\
+\qquad    server\_name  your\_ip\_address\_here;\\
+
+\qquad    location / \{ \\
+\qquad \qquad        proxy\_pass http://0.0.0.0:8080;\\
+\qquad    \}\\
+\}
+\hrule
+Now, save the file as virtual.conf and execute the below two line on the terminal:\\
+\textbf{sudo nginx -t\\}
+\textbf{sudo service nginx restart\\}
+Now, we can access the web app through the ip address and port number is not required to mention.
+\end{flushleft}
+
+
+
+\end{document}
+
