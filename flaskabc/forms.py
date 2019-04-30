@@ -200,23 +200,23 @@ class Opt_certForm(FlaskForm):
 
 class Opt_cert_AForm(FlaskForm):
     date = DateField('Date of consultation',format='%Y-%m-%d')
-    fee_consult = FloatField('Consultation Fee paid (Rs.)', validators=[DataRequired()])
-    fee_inj = FloatField('Fee paid for intravenous/intramuscular/subcutaneous injections(Rs.)', validators=[DataRequired()])
+    fee_consult = FloatField('Consultation Fee paid (Rs.)')
+    fee_inj = FloatField('Fee paid for intravenous/intramuscular/subcutaneous injections(Rs.)')
     submit = SubmitField('Submit')
 
 
 class Opt_cert_BForm(FlaskForm):
-    name = StringField('Name of the medicine', validators=[DataRequired()])
-    quantity = StringField('Quantity', validators=[DataRequired()])
-    price = FloatField('Price (Rs.)', validators=[DataRequired()])
-    cashmemo = StringField('Cash Memo No.', validators=[DataRequired()])
+    name = StringField('Name of the medicine')
+    quantity = StringField('Quantity')
+    price = FloatField('Price (Rs.)')
+    cashmemo = StringField('Cash Memo No.')
     date = DateField('Date',format='%Y-%m-%d')
     submit = SubmitField('Submit')
 
 
 class Opt_cert_CForm(FlaskForm):
-    name_test = StringField('Name of the diagnostic test', validators=[DataRequired()])
-    name_hos = StringField('Name of the diagnostic Centre/Hospital', validators=[DataRequired()])
+    name_test = StringField('Name of the diagnostic test')
+    name_hos = StringField('Name of the diagnostic Centre/Hospital')
     date = DateField('Date of test',format='%Y-%m-%d')
-    amount = FloatField('Amount paid(Rs.)', validators=[DataRequired()])
+    amount = FloatField('Amount paid(Rs.)')
     submit = SubmitField('Submit')
