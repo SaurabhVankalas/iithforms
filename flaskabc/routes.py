@@ -1227,7 +1227,7 @@ def download_tab(tab_id):
     can.drawString(345,673, tab.inst)
     can.drawString(113,653, str(tab.bp))
     wwer = str(tab.ipac)
-    if len(wwe) > 31:
+    if len(wwer) > 31:
         can.drawString(494,651, wwer[:15])
         can.drawString(494,640, wwer[15:30])
         can.drawString(494,629, wwer[30:])
